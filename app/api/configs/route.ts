@@ -14,6 +14,9 @@ export async function GET() {
       endTime: c.end_time,
       slotDuration: c.slot_duration,
       daysOfWeek: JSON.parse(c.days_of_week),
+      lunchBreakEnabled: c.lunch_break_enabled === 1,
+      lunchBreakStart: c.lunch_break_start || undefined,
+      lunchBreakDuration: c.lunch_break_duration || undefined,
     }));
 
     return NextResponse.json(formattedConfigs);
@@ -29,8 +32,8 @@ export async function POST(request: NextRequest) {
     const config = await request.json();
 
     db.prepare(`
-      INSERT INTO availability_configs (id, start_date, end_date, start_time, end_time, slot_duration, days_of_week)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO availability_configs (id, start_date, end_date, start_time, end_time, slot_duration, days_of_week, lunch_break_enabled, lunch_break_start, lunch_break_duration)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       config.id,
       config.startDate,
@@ -38,7 +41,10 @@ export async function POST(request: NextRequest) {
       config.startTime,
       config.endTime,
       config.slotDuration,
-      JSON.stringify(config.daysOfWeek)
+      JSON.stringify(config.daysOfWeek),
+      config.lunchBreakEnabled ? 1 : 0,
+      config.lunchBreakStart || null,
+      config.lunchBreakDuration || null
     );
 
     return NextResponse.json({ success: true, config });

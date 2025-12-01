@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useApp } from '../context/AppContext';
 import { AvailabilityConfig } from '../types';
 
@@ -51,6 +52,7 @@ export default function AdminPage() {
   const [selectedDateView, setSelectedDateView] = useState<string | null>(null);
   const [filterView, setFilterView] = useState<'all' | 'booked' | 'available' | 'disabled'>('all');
   const [calendarDate, setCalendarDate] = useState(new Date());
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Form state
   const [startDate, setStartDate] = useState('');
@@ -59,6 +61,9 @@ export default function AdminPage() {
   const [endTime, setEndTime] = useState('17:00');
   const [slotDuration, setSlotDuration] = useState(30);
   const [selectedDays, setSelectedDays] = useState<number[]>([1, 2, 3, 4, 5]);
+  const [lunchBreakEnabled, setLunchBreakEnabled] = useState(false);
+  const [lunchBreakStart, setLunchBreakStart] = useState('12:00');
+  const [lunchBreakDuration, setLunchBreakDuration] = useState(60);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,6 +106,9 @@ export default function AdminPage() {
       endTime,
       slotDuration,
       daysOfWeek: selectedDays,
+      lunchBreakEnabled,
+      lunchBreakStart: lunchBreakEnabled ? lunchBreakStart : undefined,
+      lunchBreakDuration: lunchBreakEnabled ? lunchBreakDuration : undefined,
     };
 
     addAvailabilityConfig(config);
@@ -113,6 +121,9 @@ export default function AdminPage() {
     setEndTime('17:00');
     setSlotDuration(30);
     setSelectedDays([1, 2, 3, 4, 5]);
+    setLunchBreakEnabled(false);
+    setLunchBreakStart('12:00');
+    setLunchBreakDuration(60);
   };
 
   const formatDate = (dateStr: string) => {
@@ -259,6 +270,15 @@ export default function AdminPage() {
             >
               Agendamentos ({bookings.length})
             </button>
+            <Link
+              href="/relatorio"
+              className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap text-gray-500 hover:text-gray-700 flex items-center gap-1.5"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+              </svg>
+              Relatório Diário
+            </Link>
           </nav>
         </div>
 
@@ -361,6 +381,69 @@ export default function AdminPage() {
                   </div>
                 </div>
 
+                {/* Configuração de Horário de Almoço */}
+                <div className="border-t border-gray-200 pt-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={lunchBreakEnabled}
+                        onChange={(e) => setLunchBreakEnabled(e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                    <span className="text-sm font-medium text-gray-700">
+                      Incluir Horário de Almoço
+                    </span>
+                  </div>
+
+                  {lunchBreakEnabled && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Início do Almoço
+                        </label>
+                        <input
+                          type="time"
+                          value={lunchBreakStart}
+                          onChange={(e) => setLunchBreakStart(e.target.value)}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Duração do Almoço
+                        </label>
+                        <select
+                          value={lunchBreakDuration}
+                          onChange={(e) => setLunchBreakDuration(Number(e.target.value))}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
+                        >
+                          <option value={30}>30 minutos</option>
+                          <option value={45}>45 minutos</option>
+                          <option value={60}>1 hora</option>
+                          <option value={90}>1h 30min</option>
+                          <option value={120}>2 horas</option>
+                        </select>
+                      </div>
+                      <div className="md:col-span-2">
+                        <p className="text-xs text-orange-700">
+                          Os slots que caírem dentro do horário de almoço ({lunchBreakStart} - {
+                            (() => {
+                              const [h, m] = lunchBreakStart.split(':').map(Number);
+                              const totalMin = h * 60 + m + lunchBreakDuration;
+                              const endH = Math.floor(totalMin / 60);
+                              const endM = totalMin % 60;
+                              return `${String(endH).padStart(2, '0')}:${String(endM).padStart(2, '0')}`;
+                            })()
+                          }) não serão criados.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 <div className="flex gap-4">
                   <button
                     type="submit"
@@ -399,6 +482,11 @@ export default function AdminPage() {
                           <p className="text-sm text-gray-500">
                             {config.daysOfWeek.map(d => DAYS_OF_WEEK.find(day => day.value === d)?.label).join(', ')}
                           </p>
+                          {config.lunchBreakEnabled && config.lunchBreakStart && config.lunchBreakDuration && (
+                            <p className="text-sm text-orange-600">
+                              🍽️ Almoço: {config.lunchBreakStart} ({config.lunchBreakDuration}min)
+                            </p>
+                          )}
                         </div>
                         <button
                           onClick={() => removeAvailabilityConfig(config.id)}
@@ -741,6 +829,32 @@ export default function AdminPage() {
           ) : (
             /* Lista de agendamentos */
             <div>
+              {/* Campo de busca */}
+              <div className="mb-4">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Buscar por código (AG-0001), nome, telefone ou email..."
+                    className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
+                  />
+                  <svg className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              </div>
+
               {bookings.length === 0 ? (
                 <div className="text-center py-8 sm:py-12">
                   <svg className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-3 sm:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -750,20 +864,45 @@ export default function AdminPage() {
                 </div>
               ) : (
                 <div className="space-y-3 sm:space-y-4">
-                  {bookings
-                    .sort((a, b) => {
-                      const slotA = slots.find(s => s.id === a.slotId);
-                      const slotB = slots.find(s => s.id === b.slotId);
-                      if (!slotA || !slotB) return 0;
-                      return `${slotA.date}${slotA.startTime}`.localeCompare(`${slotB.date}${slotB.startTime}`);
-                    })
-                    .map(booking => {
+                  {(() => {
+                    const query = searchQuery.toLowerCase().trim();
+                    const filteredBookings = bookings
+                      .filter(booking => {
+                        if (!query) return true;
+                        const slot = slots.find(s => s.id === booking.slotId);
+                        return (
+                          booking.id.toLowerCase().includes(query) ||
+                          booking.name.toLowerCase().includes(query) ||
+                          (booking.phone && booking.phone.toLowerCase().includes(query)) ||
+                          (booking.email && booking.email.toLowerCase().includes(query)) ||
+                          (slot && slot.date.includes(query))
+                        );
+                      })
+                      .sort((a, b) => {
+                        const slotA = slots.find(s => s.id === a.slotId);
+                        const slotB = slots.find(s => s.id === b.slotId);
+                        if (!slotA || !slotB) return 0;
+                        return `${slotB.date}${slotB.startTime}`.localeCompare(`${slotA.date}${slotA.startTime}`);
+                      });
+
+                    if (filteredBookings.length === 0) {
+                      return (
+                        <div className="text-center py-8">
+                          <p className="text-gray-500">Nenhum agendamento encontrado para &quot;{searchQuery}&quot;</p>
+                        </div>
+                      );
+                    }
+
+                    return filteredBookings.map(booking => {
                       const slot = slots.find(s => s.id === booking.slotId);
                       return (
                         <div key={booking.id} className="p-3 sm:p-4 bg-gray-50 rounded-lg">
                           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                             <div className="flex-1 min-w-0">
                               <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
+                                <span className="px-2 py-0.5 bg-gray-200 text-gray-700 text-xs font-mono rounded">
+                                  {booking.id}
+                                </span>
                                 <span className="font-semibold text-gray-800 text-sm sm:text-base">{booking.name}</span>
                                 {slot && (
                                   <span className="px-2 py-0.5 sm:py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
@@ -794,7 +933,8 @@ export default function AdminPage() {
                           </div>
                         </div>
                       );
-                    })}
+                    });
+                  })()}
                 </div>
               )}
             </div>

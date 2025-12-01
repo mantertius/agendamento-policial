@@ -45,9 +45,10 @@ export default function Calendar() {
   const getDayStatus = (dateStr: string) => {
     const daySlots = slotsByDate[dateStr] || [];
     if (daySlots.length === 0) return 'none';
-    const availableSlots = daySlots.filter(s => !s.isBooked);
+    // Filtrar slots que já passaram
+    const availableSlots = daySlots.filter(s => !s.isBooked && !isSlotPast(s));
     if (availableSlots.length === 0) return 'full';
-    if (availableSlots.length < daySlots.length) return 'partial';
+    if (availableSlots.length < daySlots.filter(s => !isSlotPast(s)).length) return 'partial';
     return 'available';
   };
 
@@ -61,6 +62,13 @@ export default function Calendar() {
   };
 
   const today = new Date().toISOString().split('T')[0];
+  
+  // Função para verificar se um slot já passou
+  const isSlotPast = (slot: TimeSlot): boolean => {
+    const now = new Date();
+    const slotDate = new Date(`${slot.date}T${slot.startTime}:00`);
+    return slotDate <= now;
+  };
 
   if (!isReady) {
     return (
@@ -119,7 +127,8 @@ export default function Calendar() {
           const isSelected = selectedDate === dateStr;
           const isPast = dateStr < today;
           const daySlots = slotsByDate[dateStr] || [];
-          const availableCount = daySlots.filter(s => !s.isBooked).length;
+          // Contar apenas slots disponíveis que ainda não passaram
+          const availableCount = daySlots.filter(s => !s.isBooked && !isSlotPast(s)).length;
 
           return (
             <button
@@ -168,24 +177,34 @@ export default function Calendar() {
             })}
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
-            {(slotsByDate[selectedDate] || []).map(slot => (
-              <button
-                key={slot.id}
-                onClick={() => !slot.isBooked && setSelectedSlot(slot)}
-                disabled={slot.isBooked}
-                className={`
-                  p-2 sm:p-4 rounded-lg text-center transition-all
-                  ${slot.isBooked 
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed line-through' 
-                    : 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-2 border-blue-200 hover:border-blue-300 cursor-pointer'
-                  }
-                `}
-              >
-                <span className="font-medium text-sm sm:text-base">{slot.startTime}</span>
-                <span className="text-gray-400 mx-0.5 sm:mx-1 text-sm">-</span>
-                <span className="font-medium text-sm sm:text-base">{slot.endTime}</span>
-              </button>
-            ))}
+            {(slotsByDate[selectedDate] || []).map(slot => {
+              const isPastSlot = isSlotPast(slot);
+              const isUnavailable = slot.isBooked || isPastSlot;
+              
+              return (
+                <button
+                  key={slot.id}
+                  onClick={() => !isUnavailable && setSelectedSlot(slot)}
+                  disabled={isUnavailable}
+                  className={`
+                    p-2 sm:p-4 rounded-lg text-center transition-all
+                    ${isUnavailable 
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                      : 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-2 border-blue-200 hover:border-blue-300 cursor-pointer'
+                    }
+                    ${slot.isBooked ? 'line-through' : ''}
+                  `}
+                  title={isPastSlot && !slot.isBooked ? 'Horário já passou' : slot.isBooked ? 'Horário ocupado' : 'Clique para agendar'}
+                >
+                  <span className="font-medium text-sm sm:text-base">{slot.startTime}</span>
+                  <span className="text-gray-400 mx-0.5 sm:mx-1 text-sm">-</span>
+                  <span className="font-medium text-sm sm:text-base">{slot.endTime}</span>
+                  {isPastSlot && !slot.isBooked && (
+                    <div className="text-xs text-gray-400 mt-1">Passou</div>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
       )}

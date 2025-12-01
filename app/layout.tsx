@@ -9,8 +9,12 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Agendamento Policial - Sistema de Atendimento",
-  description: "Sistema de agendamento de atendimento policial",
+  title: "Polícia Civil AL - Sistema de Agendamento",
+  description: "Sistema de agendamento de atendimento - Polícia Civil de Alagoas",
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  },
 };
 
 export default function RootLayout({

@@ -12,6 +12,7 @@ export interface Booking {
   id: string;
   slotId: string;
   name: string;
+  cpf?: string;
   phone?: string;
   email?: string;
   description?: string;
@@ -26,6 +27,9 @@ export interface AvailabilityConfig {
   endTime: string;
   slotDuration: number; // em minutos
   daysOfWeek: number[]; // 0 = domingo, 1 = segunda, etc.
+  lunchBreakEnabled?: boolean; // se tem horário de almoço
+  lunchBreakStart?: string; // formato HH:MM
+  lunchBreakDuration?: number; // duração em minutos (30, 45, 60, etc.)
 }
 
 export interface AppState {
