@@ -8,8 +8,8 @@
 set -e
 
 APP_NAME="agendamento-policial"
-APP_DIR="/var/www/$APP_NAME"
-REPO_URL="https://github.com/mantertius/agendamento-policial.git"  # Altere se necessário
+APP_DIR="/root/agendamento-policial"
+REPO_URL="https://github.com/mantertius/agendamento-policial.git"
 
 echo "🚀 Iniciando deploy do $APP_NAME..."
 
@@ -40,8 +40,7 @@ sudo npm install -g pm2
 
 # 6. Criar diretório da aplicação
 echo "📁 Configurando diretório..."
-sudo mkdir -p $APP_DIR
-sudo chown -R $USER:$USER $APP_DIR
+mkdir -p $APP_DIR
 
 # 7. Clonar/Atualizar repositório
 if [ -d "$APP_DIR/.git" ]; then
@@ -58,24 +57,25 @@ fi
 echo "📦 Instalando dependências do projeto..."
 npm ci --production=false
 
-# 9. Build da aplicação
+# 9. Criar diretório de dados
+mkdir -p data
+
+# 10. Build da aplicação
 echo "🔨 Fazendo build..."
 npm run build
 
-# 10. Configurar Nginx
+# 11. Configurar Nginx
 echo "🌐 Configurando Nginx..."
 sudo cp nginx.conf /etc/nginx/sites-available/$APP_NAME
 sudo ln -sf /etc/nginx/sites-available/$APP_NAME /etc/nginx/sites-enabled/
 sudo rm -f /etc/nginx/sites-enabled/default
-sudo nginx -t
-sudo systemctl reload nginx
+sudo nginx -t && sudo systemctl reload nginx
 
-# 11. Configurar PM2
+# 12. Configurar PM2
 echo "⚙️ Configurando PM2..."
 pm2 delete $APP_NAME 2>/dev/null || true
 pm2 start npm --name "$APP_NAME" -- start
 pm2 save
-pm2 startup | tail -1 | sudo bash
 
 echo ""
 echo "✅ Deploy concluído!"
