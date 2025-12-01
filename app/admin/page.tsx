@@ -5,7 +5,9 @@ import Link from 'next/link';
 import { useApp } from '../context/AppContext';
 import { AvailabilityConfig } from '../types';
 
-const ADMIN_PASSWORD = 'admin123'; // Em produção, usar variável de ambiente
+// Buscar senha administrativa de .env.local (exportar como NEXT_PUBLIC_ADMIN_PASSWORD para uso no cliente)
+// Atenção: expor senhas no cliente não é inseguro — prefira validar no servidor (API) em produção.
+const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD ?? 'admin123';
 
 const DAYS_OF_WEEK = [
   { value: 0, label: 'Domingo' },
