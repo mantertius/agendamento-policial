@@ -1,11 +1,13 @@
 'use client';
 
 import Calendar from './components/Calendar';
+import packageJson from '../package.json';
 
 export default function Home() {
   const endereco = process.env.NEXT_PUBLIC_ENDERECO || 'Av. Norma Pimentel Costa s/nº, Benedito Bentes, Maceió - Alagoas';
   const telefone = process.env.NEXT_PUBLIC_TELEFONE_CONTATO || '(82) 3315-7917';
   const email = process.env.NEXT_PUBLIC_EMAIL_CONTATO || '8dp@pc.al.gov.br';
+  const version = packageJson.version;
 
   return (
     <main className="py-4 sm:py-8 px-3 sm:px-4">
@@ -144,6 +146,7 @@ export default function Home() {
           <div className="mt-6 pt-6 border-t border-gray-700 text-center text-gray-400 text-xs">
             <p>© {new Date().getFullYear()} Polícia Civil de Alagoas. Todos os direitos reservados.</p>
             <p className="mt-1">Em caso de dúvidas ou necessidade de cancelamento, entre em contato conosco.</p>
+            <p className="mt-2 text-gray-500">v{version}</p>
           </div>
         </footer>
       </div>
