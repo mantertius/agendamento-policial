@@ -1,13 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/db';
+import getDb from '@/lib/db';
+
+interface SlotRow {
+  id: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  is_booked: number;
+}
+
+interface BookingRow {
+  id: string;
+  slot_id: string;
+  name: string;
+  phone: string | null;
+  email: string | null;
+  description: string | null;
+  created_at: string;
+}
 
 export async function GET() {
   try {
-    const slots = db.prepare('SELECT * FROM slots ORDER BY date, start_time').all();
-    const bookings = db.prepare('SELECT * FROM bookings').all();
+    const db = getDb();
+    const slots = db.prepare('SELECT * FROM slots ORDER BY date, start_time').all() as SlotRow[];
+    const bookings = db.prepare('SELECT * FROM bookings').all() as BookingRow[];
 
-    const formattedSlots = slots.map((slot: any) => {
-      const booking = bookings.find((b: any) => b.slot_id === slot.id);
+    const formattedSlots = slots.map((slot) => {
+      const booking = bookings.find((b) => b.slot_id === slot.id);
       return {
         id: slot.id,
         date: slot.date,
@@ -35,6 +54,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    const db = getDb();
     const slots = await request.json();
     
     const insertStmt = db.prepare(`
@@ -59,6 +79,7 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE() {
   try {
+    const db = getDb();
     db.prepare('DELETE FROM bookings').run();
     db.prepare('DELETE FROM slots').run();
     return NextResponse.json({ success: true });

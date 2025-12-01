@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/db';
+import getDb from '@/lib/db';
 
 export async function GET() {
   try {
+    const db = getDb();
     const bookings = db.prepare('SELECT * FROM bookings ORDER BY created_at DESC').all();
 
     const formattedBookings = bookings.map((b: any) => ({
@@ -24,6 +25,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    const db = getDb();
     const booking = await request.json();
 
     // Verificar se o slot existe e não está reservado

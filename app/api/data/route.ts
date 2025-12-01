@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-import db from '@/lib/db';
+import getDb from '@/lib/db';
 
 export async function GET() {
   try {
+    const db = getDb();
     const slots = db.prepare('SELECT * FROM slots ORDER BY date, start_time').all();
     const bookings = db.prepare('SELECT * FROM bookings').all();
     const configs = db.prepare('SELECT * FROM availability_configs').all();

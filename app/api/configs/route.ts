@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import db from '@/lib/db';
+import getDb from '@/lib/db';
 
 export async function GET() {
   try {
+    const db = getDb();
     const configs = db.prepare('SELECT * FROM availability_configs').all();
 
     const formattedConfigs = configs.map((c: any) => ({
@@ -24,6 +25,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    const db = getDb();
     const config = await request.json();
 
     db.prepare(`
