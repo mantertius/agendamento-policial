@@ -1,0 +1,16 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/api/bookings/[id]/route": "app/api/bookings/[id]/route.js",
+  "/api/bookings/route": "app/api/bookings/route.js",
+  "/api/configs/[id]/route": "app/api/configs/[id]/route.js",
+  "/api/configs/route": "app/api/configs/route.js",
+  "/api/data/route": "app/api/data/route.js",
+  "/api/send-email/route": "app/api/send-email/route.js",
+  "/api/slots/[id]/route": "app/api/slots/[id]/route.js",
+  "/api/slots/route": "app/api/slots/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js",
+  "/relatorio/page": "app/relatorio/page.js"
+}

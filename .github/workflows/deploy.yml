@@ -21,15 +21,15 @@ jobs:
             set -e
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            export NODE_OPTIONS="--max-old-space-size=512"
+
             cd ~/agendamento-policial
-            echo "📥 Pulling latest code..."
+            echo "📥 Pulling latest code (with .next)..."
             git pull origin master
-            echo "📦 Installing dependencies..."
-            npm install
-            echo "🔨 Building..."
-            npm run build
+
+            echo "📦 Installing dependencies (prod only)..."
+            npm ci --omit=dev
+
             echo "🚀 Restarting PM2..."
-            pm2 restart agendamento-policial
+            pm2 restart agendamento-policial || pm2 start npm --name agendamento-policial -- run start
             pm2 save
             echo "✅ Deploy complete!"

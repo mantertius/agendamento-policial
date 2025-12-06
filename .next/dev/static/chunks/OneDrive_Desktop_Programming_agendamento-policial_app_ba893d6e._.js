@@ -1,0 +1,811 @@
+(globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push([typeof document === "object" ? document.currentScript : undefined,
+"[project]/OneDrive/Desktop/Programming/agendamento-policial/app/utils/holidays.ts [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+// Lista de feriados nacionais e estaduais de Alagoas
+// Os feriados móveis (Páscoa, Carnaval, Corpus Christi) são calculados dinamicamente
+__turbopack_context__.s([
+    "FIXED_HOLIDAYS",
+    ()=>FIXED_HOLIDAYS,
+    "calculateEaster",
+    ()=>calculateEaster,
+    "getHolidaysForYear",
+    ()=>getHolidaysForYear,
+    "getHolidaysInRange",
+    ()=>getHolidaysInRange,
+    "getMovableHolidays",
+    ()=>getMovableHolidays,
+    "isHoliday",
+    ()=>isHoliday
+]);
+const FIXED_HOLIDAYS = [
+    // Feriados Nacionais
+    {
+        date: '01-01',
+        name: 'Confraternização Universal',
+        type: 'nacional'
+    },
+    {
+        date: '04-21',
+        name: 'Tiradentes',
+        type: 'nacional'
+    },
+    {
+        date: '05-01',
+        name: 'Dia do Trabalhador',
+        type: 'nacional'
+    },
+    {
+        date: '09-07',
+        name: 'Independência do Brasil',
+        type: 'nacional'
+    },
+    {
+        date: '10-12',
+        name: 'Nossa Senhora Aparecida',
+        type: 'nacional'
+    },
+    {
+        date: '11-02',
+        name: 'Finados',
+        type: 'nacional'
+    },
+    {
+        date: '11-15',
+        name: 'Proclamação da República',
+        type: 'nacional'
+    },
+    {
+        date: '11-20',
+        name: 'Dia da Consciência Negra',
+        type: 'nacional'
+    },
+    {
+        date: '12-25',
+        name: 'Natal',
+        type: 'nacional'
+    },
+    // Feriados Estaduais de Alagoas
+    {
+        date: '06-24',
+        name: 'São João',
+        type: 'estadual'
+    },
+    {
+        date: '06-29',
+        name: 'São Pedro',
+        type: 'estadual'
+    },
+    {
+        date: '09-16',
+        name: 'Emancipação Política de Alagoas',
+        type: 'estadual'
+    },
+    {
+        date: '11-20',
+        name: 'Morte de Zumbi dos Palmares',
+        type: 'estadual'
+    },
+    // Feriado Municipal de Maceió
+    {
+        date: '12-08',
+        name: 'Nossa Senhora da Conceição (Padroeira de Maceió)',
+        type: 'municipal'
+    }
+];
+function calculateEaster(year) {
+    const a = year % 19;
+    const b = Math.floor(year / 100);
+    const c = year % 100;
+    const d = Math.floor(b / 4);
+    const e = b % 4;
+    const f = Math.floor((b + 8) / 25);
+    const g = Math.floor((b - f + 1) / 3);
+    const h = (19 * a + b - d - g + 15) % 30;
+    const i = Math.floor(c / 4);
+    const k = c % 4;
+    const l = (32 + 2 * e + 2 * i - h - k) % 7;
+    const m = Math.floor((a + 11 * h + 22 * l) / 451);
+    const month = Math.floor((h + l - 7 * m + 114) / 31);
+    const day = (h + l - 7 * m + 114) % 31 + 1;
+    return new Date(year, month - 1, day);
+}
+function getMovableHolidays(year) {
+    const easter = calculateEaster(year);
+    const movableHolidays = [];
+    // Função auxiliar para formatar data como YYYY-MM-DD
+    const formatDate = (date)=>{
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    };
+    // Função auxiliar para adicionar/subtrair dias
+    const addDays = (date, days)=>{
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+    };
+    // Carnaval (47 dias antes da Páscoa - segunda e terça)
+    const carnavalTerca = addDays(easter, -47);
+    const carnavalSegunda = addDays(easter, -48);
+    movableHolidays.push({
+        date: formatDate(carnavalSegunda),
+        name: 'Carnaval (Segunda)',
+        type: 'nacional'
+    });
+    movableHolidays.push({
+        date: formatDate(carnavalTerca),
+        name: 'Carnaval (Terça)',
+        type: 'nacional'
+    });
+    // Quarta-feira de Cinzas (ponto facultativo, mas vamos incluir como meio expediente é comum)
+    const quartaCinzas = addDays(easter, -46);
+    movableHolidays.push({
+        date: formatDate(quartaCinzas),
+        name: 'Quarta-feira de Cinzas',
+        type: 'nacional'
+    });
+    // Sexta-feira Santa (2 dias antes da Páscoa)
+    const sextaSanta = addDays(easter, -2);
+    movableHolidays.push({
+        date: formatDate(sextaSanta),
+        name: 'Sexta-feira Santa',
+        type: 'nacional'
+    });
+    // Páscoa (domingo)
+    movableHolidays.push({
+        date: formatDate(easter),
+        name: 'Páscoa',
+        type: 'nacional'
+    });
+    // Corpus Christi (60 dias após a Páscoa)
+    const corpusChristi = addDays(easter, 60);
+    movableHolidays.push({
+        date: formatDate(corpusChristi),
+        name: 'Corpus Christi',
+        type: 'nacional'
+    });
+    return movableHolidays;
+}
+function getHolidaysForYear(year) {
+    const holidays = [];
+    // Adicionar feriados fixos
+    for (const holiday of FIXED_HOLIDAYS){
+        holidays.push({
+            date: `${year}-${holiday.date}`,
+            name: holiday.name,
+            type: holiday.type
+        });
+    }
+    // Adicionar feriados móveis
+    const movableHolidays = getMovableHolidays(year);
+    holidays.push(...movableHolidays);
+    return holidays.sort((a, b)=>a.date.localeCompare(b.date));
+}
+function isHoliday(dateStr) {
+    const [year] = dateStr.split('-').map(Number);
+    const holidays = getHolidaysForYear(year);
+    const holiday = holidays.find((h)=>h.date === dateStr);
+    if (holiday) {
+        return {
+            isHoliday: true,
+            holidayName: holiday.name,
+            holidayType: holiday.type
+        };
+    }
+    return {
+        isHoliday: false
+    };
+}
+function getHolidaysInRange(startDate, endDate) {
+    const [startYear] = startDate.split('-').map(Number);
+    const [endYear] = endDate.split('-').map(Number);
+    const allHolidays = [];
+    for(let year = startYear; year <= endYear; year++){
+        const yearHolidays = getHolidaysForYear(year);
+        allHolidays.push(...yearHolidays.filter((h)=>h.date >= startDate && h.date <= endDate));
+    }
+    return allHolidays.sort((a, b)=>a.date.localeCompare(b.date));
+}
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/OneDrive/Desktop/Programming/agendamento-policial/app/context/AppContext.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "AppProvider",
+    ()=>AppProvider,
+    "useApp",
+    ()=>useApp
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/OneDrive/Desktop/Programming/agendamento-policial/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/OneDrive/Desktop/Programming/agendamento-policial/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$app$2f$utils$2f$holidays$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/OneDrive/Desktop/Programming/agendamento-policial/app/utils/holidays.ts [app-client] (ecmascript)");
+;
+var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.signature();
+'use client';
+;
+;
+const AppContext = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createContext"])(undefined);
+const defaultState = {
+    slots: [],
+    bookings: [],
+    availabilityConfigs: []
+};
+function AppProvider({ children }) {
+    _s();
+    const [state, setState] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(defaultState);
+    const [isReady, setIsReady] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    // Buscar dados da API
+    const refreshData = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
+        "AppProvider.useCallback[refreshData]": async ()=>{
+            try {
+                const response = await fetch('/api/data');
+                if (response.ok) {
+                    const data = await response.json();
+                    setState({
+                        slots: data.slots || [],
+                        bookings: data.bookings || [],
+                        availabilityConfigs: data.availabilityConfigs || []
+                    });
+                }
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+            }
+        }
+    }["AppProvider.useCallback[refreshData]"], []);
+    // Carregar dados iniciais
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "AppProvider.useEffect": ()=>{
+            refreshData().then({
+                "AppProvider.useEffect": ()=>setIsReady(true)
+            }["AppProvider.useEffect"]);
+        }
+    }["AppProvider.useEffect"], [
+        refreshData
+    ]);
+    const addSlot = (slot)=>{
+        setState((prev)=>({
+                ...prev,
+                slots: [
+                    ...prev.slots,
+                    slot
+                ]
+            }));
+    };
+    const removeSlot = async (slotId)=>{
+        try {
+            const response = await fetch(`/api/slots/${slotId}`, {
+                method: 'DELETE'
+            });
+            if (response.ok) {
+                setState((prev)=>({
+                        ...prev,
+                        slots: prev.slots.filter((s)=>s.id !== slotId),
+                        bookings: prev.bookings.filter((b)=>b.slotId !== slotId)
+                    }));
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('Erro ao remover slot:', error);
+            return false;
+        }
+    };
+    const disableSlot = async (slotId)=>{
+        try {
+            const response = await fetch(`/api/slots/${slotId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    isDisabled: true
+                })
+            });
+            if (response.ok) {
+                setState((prev)=>({
+                        ...prev,
+                        slots: prev.slots.map((s)=>s.id === slotId ? {
+                                ...s,
+                                isDisabled: true,
+                                isBooked: false,
+                                booking: undefined
+                            } : s),
+                        bookings: prev.bookings.filter((b)=>b.slotId !== slotId)
+                    }));
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('Erro ao desativar slot:', error);
+            return false;
+        }
+    };
+    const reactivateSlot = async (slotId)=>{
+        try {
+            const response = await fetch(`/api/slots/${slotId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    isDisabled: false
+                })
+            });
+            if (response.ok) {
+                setState((prev)=>({
+                        ...prev,
+                        slots: prev.slots.map((s)=>s.id === slotId ? {
+                                ...s,
+                                isDisabled: false
+                            } : s)
+                    }));
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('Erro ao reativar slot:', error);
+            return false;
+        }
+    };
+    const addBooking = async (booking)=>{
+        try {
+            const response = await fetch('/api/bookings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(booking)
+            });
+            if (response.ok) {
+                const result = await response.json();
+                const savedBooking = result.booking;
+                setState((prev)=>({
+                        ...prev,
+                        bookings: [
+                            ...prev.bookings,
+                            savedBooking
+                        ],
+                        slots: prev.slots.map((slot)=>slot.id === savedBooking.slotId ? {
+                                ...slot,
+                                isBooked: true,
+                                booking: savedBooking
+                            } : slot)
+                    }));
+                return savedBooking;
+            }
+            return null;
+        } catch (error) {
+            console.error('Erro ao criar agendamento:', error);
+            return null;
+        }
+    };
+    const cancelBooking = async (bookingId)=>{
+        try {
+            const response = await fetch(`/api/bookings/${bookingId}`, {
+                method: 'DELETE'
+            });
+            if (response.ok) {
+                setState((prev)=>{
+                    const booking = prev.bookings.find((b)=>b.id === bookingId);
+                    if (!booking) return prev;
+                    return {
+                        ...prev,
+                        bookings: prev.bookings.filter((b)=>b.id !== bookingId),
+                        slots: prev.slots.map((slot)=>slot.id === booking.slotId ? {
+                                ...slot,
+                                isBooked: false,
+                                booking: undefined
+                            } : slot)
+                    };
+                });
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('Erro ao cancelar agendamento:', error);
+            return false;
+        }
+    };
+    const addAvailabilityConfig = async (config)=>{
+        try {
+            const response = await fetch('/api/configs', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(config)
+            });
+            if (response.ok) {
+                setState((prev)=>({
+                        ...prev,
+                        availabilityConfigs: [
+                            ...prev.availabilityConfigs,
+                            config
+                        ]
+                    }));
+            }
+        } catch (error) {
+            console.error('Erro ao criar configuração:', error);
+        }
+    };
+    const removeAvailabilityConfig = async (configId)=>{
+        try {
+            const response = await fetch(`/api/configs/${configId}`, {
+                method: 'DELETE'
+            });
+            if (response.ok) {
+                setState((prev)=>({
+                        ...prev,
+                        availabilityConfigs: prev.availabilityConfigs.filter((c)=>c.id !== configId)
+                    }));
+            }
+        } catch (error) {
+            console.error('Erro ao remover configuração:', error);
+        }
+    };
+    const generateSlotsFromConfig = async (config)=>{
+        const newSlots = [];
+        // Parsear datas corretamente para evitar problemas de fuso horário
+        const [startYear, startMonth, startDay] = config.startDate.split('-').map(Number);
+        const [endYear, endMonth, endDay] = config.endDate.split('-').map(Number);
+        const startDate = new Date(startYear, startMonth - 1, startDay);
+        const endDate = new Date(endYear, endMonth - 1, endDay);
+        for(let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)){
+            const dayOfWeek = d.getDay();
+            if (!config.daysOfWeek.includes(dayOfWeek)) continue;
+            // Verificar se o mês atual está nos meses de férias
+            const currentMonth = d.getMonth() + 1; // getMonth() retorna 0-11, precisamos de 1-12
+            if (config.vacationMonths && config.vacationMonths.includes(currentMonth)) {
+                continue; // Pular este dia se estiver em um mês de férias
+            }
+            // Formatar data manualmente para evitar problemas de fuso horário
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const dateStr = `${year}-${month}-${day}`;
+            // Verificar se é feriado (nacional, estadual ou municipal)
+            const holidayCheck = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$app$2f$utils$2f$holidays$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["isHoliday"])(dateStr);
+            if (holidayCheck.isHoliday) {
+                continue; // Pular este dia se for feriado
+            }
+            const [startHour, startMin] = config.startTime.split(':').map(Number);
+            const [endHour, endMin] = config.endTime.split(':').map(Number);
+            let currentMinutes = startHour * 60 + startMin;
+            const endMinutes = endHour * 60 + endMin;
+            // Calcular horário de almoço se habilitado
+            let lunchStartMinutes = -1;
+            let lunchEndMinutes = -1;
+            if (config.lunchBreakEnabled && config.lunchBreakStart && config.lunchBreakDuration) {
+                const [lunchStartHour, lunchStartMin] = config.lunchBreakStart.split(':').map(Number);
+                lunchStartMinutes = lunchStartHour * 60 + lunchStartMin;
+                lunchEndMinutes = lunchStartMinutes + config.lunchBreakDuration;
+            }
+            while(currentMinutes + config.slotDuration <= endMinutes){
+                const slotStartHour = Math.floor(currentMinutes / 60);
+                const slotStartMin = currentMinutes % 60;
+                const slotEndMin = currentMinutes + config.slotDuration;
+                const slotEndHour = Math.floor(slotEndMin / 60);
+                const slotEndMinRemainder = slotEndMin % 60;
+                // Verificar se o slot cai no horário de almoço
+                if (lunchStartMinutes !== -1) {
+                    // Se o slot começa durante o almoço ou termina durante o almoço, pular
+                    const slotStart = currentMinutes;
+                    const slotEnd = currentMinutes + config.slotDuration;
+                    if (slotStart >= lunchStartMinutes && slotStart < lunchEndMinutes || slotEnd > lunchStartMinutes && slotEnd <= lunchEndMinutes || slotStart <= lunchStartMinutes && slotEnd >= lunchEndMinutes) {
+                        currentMinutes += config.slotDuration;
+                        continue;
+                    }
+                }
+                const slotStartTime = `${String(slotStartHour).padStart(2, '0')}:${String(slotStartMin).padStart(2, '0')}`;
+                const slotEndTime = `${String(slotEndHour).padStart(2, '0')}:${String(slotEndMinRemainder).padStart(2, '0')}`;
+                const slotId = `${dateStr}-${slotStartTime}`;
+                // Verificar se o slot já existe
+                const existingSlot = state.slots.find((s)=>s.id === slotId);
+                if (!existingSlot) {
+                    newSlots.push({
+                        id: slotId,
+                        date: dateStr,
+                        startTime: slotStartTime,
+                        endTime: slotEndTime,
+                        isBooked: false
+                    });
+                }
+                currentMinutes += config.slotDuration;
+            }
+        }
+        if (newSlots.length > 0) {
+            try {
+                const response = await fetch('/api/slots', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newSlots)
+                });
+                if (response.ok) {
+                    setState((prev)=>({
+                            ...prev,
+                            slots: [
+                                ...prev.slots,
+                                ...newSlots
+                            ]
+                        }));
+                }
+            } catch (error) {
+                console.error('Erro ao criar slots:', error);
+            }
+        }
+    };
+    const clearAllSlots = async ()=>{
+        try {
+            const response = await fetch('/api/slots', {
+                method: 'DELETE'
+            });
+            if (response.ok) {
+                setState((prev)=>({
+                        ...prev,
+                        slots: [],
+                        bookings: []
+                    }));
+            }
+        } catch (error) {
+            console.error('Erro ao limpar slots:', error);
+        }
+    };
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(AppContext.Provider, {
+        value: {
+            ...state,
+            addSlot,
+            removeSlot,
+            disableSlot,
+            reactivateSlot,
+            addBooking,
+            cancelBooking,
+            addAvailabilityConfig,
+            removeAvailabilityConfig,
+            generateSlotsFromConfig,
+            clearAllSlots,
+            isReady,
+            refreshData
+        },
+        children: children
+    }, void 0, false, {
+        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/context/AppContext.tsx",
+        lineNumber: 338,
+        columnNumber: 5
+    }, this);
+}
+_s(AppProvider, "+TkonEsbxi0Fwz+8WjEZdGZoN6E=");
+_c = AppProvider;
+function useApp() {
+    _s1();
+    const context = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useContext"])(AppContext);
+    if (context === undefined) {
+        throw new Error('useApp deve ser usado dentro de AppProvider');
+    }
+    return context;
+}
+_s1(useApp, "b9L3QQ+jgeyIrH0NfHrJ8nn7VMU=");
+var _c;
+__turbopack_context__.k.register(_c, "AppProvider");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+"[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>Header
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/OneDrive/Desktop/Programming/agendamento-policial/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/OneDrive/Desktop/Programming/agendamento-policial/node_modules/next/dist/client/app-dir/link.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/OneDrive/Desktop/Programming/agendamento-policial/node_modules/next/image.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/OneDrive/Desktop/Programming/agendamento-policial/node_modules/next/navigation.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/OneDrive/Desktop/Programming/agendamento-policial/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
+;
+var _s = __turbopack_context__.k.signature();
+'use client';
+;
+;
+;
+;
+function Header() {
+    _s();
+    const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"])();
+    const isAdmin = pathname.startsWith('/admin');
+    const [mobileMenuOpen, setMobileMenuOpen] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
+        className: "bg-gradient-to-r from-blue-800 to-blue-900 text-white shadow-lg",
+        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "max-w-6xl mx-auto px-4 py-3 sm:py-4",
+            children: [
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "flex items-center justify-between",
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                            href: "/",
+                            className: "flex items-center gap-3 sm:gap-4 hover:opacity-90 transition-opacity",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "w-11 h-11 sm:w-14 sm:h-14 flex-shrink-0",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                        src: "/logo.png",
+                                        alt: "Polícia Civil AL",
+                                        width: 56,
+                                        height: 56,
+                                        className: "w-full h-full object-contain drop-shadow-lg",
+                                        priority: true
+                                    }, void 0, false, {
+                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+                                        lineNumber: 19,
+                                        columnNumber: 15
+                                    }, this)
+                                }, void 0, false, {
+                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+                                    lineNumber: 18,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "border-l border-blue-600 pl-3 sm:pl-4",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
+                                            className: "text-sm sm:text-lg font-bold leading-tight",
+                                            children: "Polícia Civil"
+                                        }, void 0, false, {
+                                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+                                            lineNumber: 29,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                            className: "text-xs sm:text-sm text-blue-200 font-medium",
+                                            children: "Alagoas"
+                                        }, void 0, false, {
+                                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+                                            lineNumber: 30,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+                                    lineNumber: 28,
+                                    columnNumber: 13
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+                            lineNumber: 17,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
+                            className: "hidden sm:flex items-center gap-4",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                    href: "/",
+                                    className: `px-4 py-2 rounded-lg transition-colors ${!isAdmin ? 'bg-white/20 text-white' : 'text-blue-200 hover:bg-white/10'}`,
+                                    children: "Agendar"
+                                }, void 0, false, {
+                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+                                    lineNumber: 36,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                    href: "/admin",
+                                    className: `px-4 py-2 rounded-lg transition-colors ${isAdmin ? 'bg-white/20 text-white' : 'text-blue-200 hover:bg-white/10'}`,
+                                    children: "Administração"
+                                }, void 0, false, {
+                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+                                    lineNumber: 46,
+                                    columnNumber: 13
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+                            lineNumber: 35,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                            onClick: ()=>setMobileMenuOpen(!mobileMenuOpen),
+                            className: "sm:hidden p-2 hover:bg-white/10 rounded-lg transition-colors",
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                                className: "w-6 h-6",
+                                fill: "none",
+                                stroke: "currentColor",
+                                viewBox: "0 0 24 24",
+                                children: mobileMenuOpen ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                    strokeLinecap: "round",
+                                    strokeLinejoin: "round",
+                                    strokeWidth: 2,
+                                    d: "M6 18L18 6M6 6l12 12"
+                                }, void 0, false, {
+                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+                                    lineNumber: 65,
+                                    columnNumber: 17
+                                }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                    strokeLinecap: "round",
+                                    strokeLinejoin: "round",
+                                    strokeWidth: 2,
+                                    d: "M4 6h16M4 12h16M4 18h16"
+                                }, void 0, false, {
+                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+                                    lineNumber: 67,
+                                    columnNumber: 17
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+                                lineNumber: 63,
+                                columnNumber: 13
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+                            lineNumber: 59,
+                            columnNumber: 11
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+                    lineNumber: 16,
+                    columnNumber: 9
+                }, this),
+                mobileMenuOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
+                    className: "sm:hidden mt-3 pt-3 border-t border-white/20 flex flex-col gap-2",
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                            href: "/",
+                            onClick: ()=>setMobileMenuOpen(false),
+                            className: `px-4 py-3 rounded-lg transition-colors text-center ${!isAdmin ? 'bg-white/20 text-white' : 'text-blue-200 hover:bg-white/10'}`,
+                            children: "Agendar"
+                        }, void 0, false, {
+                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+                            lineNumber: 76,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                            href: "/admin",
+                            onClick: ()=>setMobileMenuOpen(false),
+                            className: `px-4 py-3 rounded-lg transition-colors text-center ${isAdmin ? 'bg-white/20 text-white' : 'text-blue-200 hover:bg-white/10'}`,
+                            children: "Administração"
+                        }, void 0, false, {
+                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+                            lineNumber: 87,
+                            columnNumber: 13
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+                    lineNumber: 75,
+                    columnNumber: 11
+                }, this)
+            ]
+        }, void 0, true, {
+            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+            lineNumber: 15,
+            columnNumber: 7
+        }, this)
+    }, void 0, false, {
+        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Header.tsx",
+        lineNumber: 14,
+        columnNumber: 5
+    }, this);
+}
+_s(Header, "FIkGCiZnrKK5dgKLT9oC7ZzKVWM=", false, function() {
+    return [
+        __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"]
+    ];
+});
+_c = Header;
+var _c;
+__turbopack_context__.k.register(_c, "Header");
+if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
+    __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
+}
+}),
+]);
+
+//# sourceMappingURL=OneDrive_Desktop_Programming_agendamento-policial_app_ba893d6e._.js.map

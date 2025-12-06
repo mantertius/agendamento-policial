@@ -1,0 +1,44 @@
+[00:00:26.362] Server  LOG      ✓ Ready in 17.6s
+[00:00:29.414] Server  LOG      ○ Compiling /admin ...
+[00:00:37.094] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <RenderFromTemplateContext>
+      <ScrollAndFocusHandler segmentPath={[...]}>
+        <InnerScrollAndFocusHandler segmentPath={[...]} focusAndScrollRef={{apply:false, ...}}>
+          <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+            <LoadingBoundary name="admin/" loading={null}>
+              <HTTPAccessFallbackBoundary notFound={undefined} forbidden={undefined} unauthorized={undefined}>
+                <RedirectBoundary>
+                  <RedirectErrorBoundary router={{...}}>
+                    <InnerLayoutRouter url="/admin" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} ...>
+                      <SegmentViewNode type="page" pagePath="/OneDrive/...">
+                        <SegmentTrieNode>
+                        <ClientPageRoot Component={function AdminPage} serverProvidedParams={{...}}>
+                          <AdminPage params={Promise} searchParams={Promise}>
+                            <div
++                             className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-8"
+-                             className="min-h-[80vh] flex items-center justify-center"
+                            >
+                              <div
++                               className="flex justify-between items-center mb-4 sm:mb-8"
+-                               className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md"
+                              >
++                               <h1 className="text-xl sm:text-3xl font-bold text-gray-800">
+-                               <div className="text-center mb-8">
+                                ...
+                              ...
+                      ...
+                    ...
+          ...
+

@@ -1,0 +1,16 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/admin/page": "/admin",
+  "/api/bookings/[id]/route": "/api/bookings/[id]",
+  "/api/bookings/route": "/api/bookings",
+  "/api/configs/[id]/route": "/api/configs/[id]",
+  "/api/configs/route": "/api/configs",
+  "/api/data/route": "/api/data",
+  "/api/send-email/route": "/api/send-email",
+  "/api/slots/[id]/route": "/api/slots/[id]",
+  "/api/slots/route": "/api/slots",
+  "/favicon.ico/route": "/favicon.ico",
+  "/page": "/",
+  "/relatorio/page": "/relatorio"
+}

@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/relatorio/layout,_N_T_/relatorio/page,_N_T_/relatorio"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/relatorio/__PAGE__",
+    "/relatorio",
+    "/_index",
+    "/_head"
+  ]
+}

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useApp } from '../context/AppContext';
 import { AvailabilityConfig } from '../types';
+import { getHolidaysForYear, FIXED_HOLIDAYS } from '../utils/holidays';
 
 // Buscar senha administrativa de .env.local (exportar como NEXT_PUBLIC_ADMIN_PASSWORD para uso no cliente)
 // Atenção: expor senhas no cliente não é inseguro — prefira validar no servidor (API) em produção.
@@ -50,7 +51,7 @@ export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(getInitialAuth);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [activeTab, setActiveTab] = useState<'config' | 'bookings' | 'calendar'>('config');
+  const [activeTab, setActiveTab] = useState<'config' | 'bookings' | 'calendar' | 'holidays'>('config');
   const [selectedDateView, setSelectedDateView] = useState<string | null>(null);
   const [filterView, setFilterView] = useState<'all' | 'booked' | 'available' | 'disabled'>('all');
   const [calendarDate, setCalendarDate] = useState(new Date());
@@ -66,6 +67,7 @@ export default function AdminPage() {
   const [lunchBreakEnabled, setLunchBreakEnabled] = useState(false);
   const [lunchBreakStart, setLunchBreakStart] = useState('12:00');
   const [lunchBreakDuration, setLunchBreakDuration] = useState(60);
+  const [vacationMonths, setVacationMonths] = useState<number[]>([]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,6 +94,14 @@ export default function AdminPage() {
     );
   };
 
+  const toggleVacationMonth = (month: number) => {
+    setVacationMonths(prev => 
+      prev.includes(month) 
+        ? prev.filter(m => m !== month)
+        : [...prev, month].sort((a, b) => a - b)
+    );
+  };
+
   const handleCreateConfig = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -111,6 +121,7 @@ export default function AdminPage() {
       lunchBreakEnabled,
       lunchBreakStart: lunchBreakEnabled ? lunchBreakStart : undefined,
       lunchBreakDuration: lunchBreakEnabled ? lunchBreakDuration : undefined,
+      vacationMonths: vacationMonths.length > 0 ? vacationMonths : undefined,
     };
 
     addAvailabilityConfig(config);
@@ -126,6 +137,7 @@ export default function AdminPage() {
     setLunchBreakEnabled(false);
     setLunchBreakStart('12:00');
     setLunchBreakDuration(60);
+    setVacationMonths([]);
   };
 
   const formatDate = (dateStr: string) => {
@@ -271,6 +283,16 @@ export default function AdminPage() {
               }`}
             >
               Agendamentos ({bookings.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('holidays')}
+              className={`px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
+                activeTab === 'holidays'
+                  ? 'border-b-2 border-blue-600 text-blue-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Feriados
             </button>
             <Link
               href="/relatorio"
@@ -446,6 +468,46 @@ export default function AdminPage() {
                   )}
                 </div>
 
+                {/* Configuração de Meses de Férias */}
+                <div className="border-t border-gray-200 pt-6">
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                      <span className="flex items-center gap-2">
+                        <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+                        </svg>
+                        Meses de Férias (sem atendimento)
+                      </span>
+                    </label>
+                    <p className="text-xs text-gray-500 mb-3">
+                      Selecione os meses em que não haverá atendimento. Nenhum slot será criado nesses meses.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {MONTHS.map((month, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => toggleVacationMonth(index + 1)}
+                          className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                            vacationMonths.includes(index + 1)
+                              ? 'bg-purple-600 text-white'
+                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                          }`}
+                        >
+                          {month.substring(0, 3)}
+                        </button>
+                      ))}
+                    </div>
+                    {vacationMonths.length > 0 && (
+                      <div className="mt-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                        <p className="text-xs text-purple-700">
+                          🏖️ Meses de férias selecionados: {vacationMonths.map(m => MONTHS[m - 1]).join(', ')}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 <div className="flex gap-4">
                   <button
                     type="submit"
@@ -487,6 +549,11 @@ export default function AdminPage() {
                           {config.lunchBreakEnabled && config.lunchBreakStart && config.lunchBreakDuration && (
                             <p className="text-sm text-orange-600">
                               🍽️ Almoço: {config.lunchBreakStart} ({config.lunchBreakDuration}min)
+                            </p>
+                          )}
+                          {config.vacationMonths && config.vacationMonths.length > 0 && (
+                            <p className="text-sm text-purple-600">
+                              🏖️ Férias: {config.vacationMonths.map(m => MONTHS[m - 1]).join(', ')}
                             </p>
                           )}
                         </div>
@@ -828,7 +895,7 @@ export default function AdminPage() {
                 })()}
               </div>
             </div>
-          ) : (
+          ) : activeTab === 'bookings' ? (
             /* Lista de agendamentos */
             <div>
               {/* Campo de busca */}
@@ -940,7 +1007,138 @@ export default function AdminPage() {
                 </div>
               )}
             </div>
-          )}
+          ) : activeTab === 'holidays' ? (
+            /* Visualização de Feriados */
+            <div className="space-y-6">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <svg className="w-6 h-6 text-yellow-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <h4 className="font-medium text-yellow-800">Feriados Automáticos</h4>
+                    <p className="text-sm text-yellow-700 mt-1">
+                      O sistema automaticamente não cria slots nos dias de feriados nacionais, estaduais de Alagoas e municipais de Maceió. 
+                      Feriados móveis como Carnaval, Páscoa e Corpus Christi são calculados automaticamente para cada ano.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Feriados Fixos */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                  <span className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                    📅
+                  </span>
+                  Feriados Fixos
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {FIXED_HOLIDAYS.map((holiday, index) => (
+                    <div 
+                      key={index} 
+                      className={`p-3 rounded-lg border ${
+                        holiday.type === 'nacional' 
+                          ? 'bg-green-50 border-green-200' 
+                          : holiday.type === 'estadual'
+                          ? 'bg-blue-50 border-blue-200'
+                          : 'bg-purple-50 border-purple-200'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-gray-800">{holiday.name}</span>
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${
+                          holiday.type === 'nacional' 
+                            ? 'bg-green-200 text-green-800' 
+                            : holiday.type === 'estadual'
+                            ? 'bg-blue-200 text-blue-800'
+                            : 'bg-purple-200 text-purple-800'
+                        }`}>
+                          {holiday.type}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {holiday.date.split('-')[1]}/{holiday.date.split('-')[0]}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Feriados do Ano Atual */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                  <span className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                    🗓️
+                  </span>
+                  Todos os Feriados de {new Date().getFullYear()}
+                </h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-gray-100">
+                        <th className="text-left p-3 rounded-tl-lg">Data</th>
+                        <th className="text-left p-3">Feriado</th>
+                        <th className="text-left p-3 rounded-tr-lg">Tipo</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {getHolidaysForYear(new Date().getFullYear()).map((holiday, index) => (
+                        <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
+                          <td className="p-3 font-mono text-gray-600">
+                            {new Date(holiday.date + 'T12:00:00').toLocaleDateString('pt-BR', {
+                              weekday: 'short',
+                              day: '2-digit',
+                              month: '2-digit'
+                            })}
+                          </td>
+                          <td className="p-3 font-medium text-gray-800">{holiday.name}</td>
+                          <td className="p-3">
+                            <span className={`text-xs px-2 py-1 rounded-full ${
+                              holiday.type === 'nacional' 
+                                ? 'bg-green-100 text-green-800' 
+                                : holiday.type === 'estadual'
+                                ? 'bg-blue-100 text-blue-800'
+                                : 'bg-purple-100 text-purple-800'
+                            }`}>
+                              {holiday.type}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Próximo ano */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                  <span className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+                    📆
+                  </span>
+                  Feriados Móveis de {new Date().getFullYear() + 1}
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {getHolidaysForYear(new Date().getFullYear() + 1)
+                    .filter(h => ['Carnaval', 'Sexta-feira Santa', 'Páscoa', 'Corpus Christi', 'Quarta-feira de Cinzas'].some(name => h.name.includes(name) || h.name.includes('Carnaval')))
+                    .map((holiday, index) => (
+                      <div key={index} className="p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
+                        <span className="font-medium text-gray-800">{holiday.name}</span>
+                        <p className="text-sm text-indigo-600 mt-1">
+                          {new Date(holiday.date + 'T12:00:00').toLocaleDateString('pt-BR', {
+                            weekday: 'long',
+                            day: '2-digit',
+                            month: 'long',
+                            year: 'numeric'
+                          })}
+                        </p>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

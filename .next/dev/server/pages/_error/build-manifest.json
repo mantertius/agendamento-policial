@@ -1,0 +1,23 @@
+{
+  "devFiles": [],
+  "ampDevFiles": [],
+  "polyfillFiles": [],
+  "lowPriorityFiles": [],
+  "rootMainFiles": [],
+  "pages": {
+    "/_error": [
+      "static/chunks/f8200_next_dist_compiled_14b45bca._.js",
+      "static/chunks/f8200_next_dist_shared_lib_6e234a31._.js",
+      "static/chunks/f8200_next_dist_client_42f3ca15._.js",
+      "static/chunks/f8200_next_dist_ab6bfaaa._.js",
+      "static/chunks/f8200_next_error_33ecd56f.js",
+      "static/chunks/[next]_entry_page-loader_ts_e72cd8d7._.js",
+      "static/chunks/f8200_react-dom_8175a8eb._.js",
+      "static/chunks/f8200_539e1aed._.js",
+      "static/chunks/[root-of-the-server]__f2a008aa._.js",
+      "static/chunks/OneDrive_Desktop_Programming_agendamento-policial_pages__error_2da965e7._.js",
+      "static/chunks/9f58e_Desktop_Programming_agendamento-policial_pages__error_73041aae._.js"
+    ]
+  },
+  "ampFirstPages": []
+}

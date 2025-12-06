@@ -1,0 +1,3 @@
+module.exports=[85698,a=>{a.v({name:"agendamento-policial",version:"0.1.0",private:!0,scripts:{dev:"next dev",build:"next build",start:"next start",lint:"eslint"},dependencies:{"better-sqlite3":"^12.4.6",next:"16.0.5",nodemailer:"^7.0.11",react:"19.2.0","react-dom":"19.2.0",sharp:"^0.34.5"},devDependencies:{"@tailwindcss/postcss":"^4","@types/better-sqlite3":"^7.6.13","@types/node":"^20","@types/nodemailer":"^7.0.4","@types/react":"^19","@types/react-dom":"^19",eslint:"^9","eslint-config-next":"16.0.5",tailwindcss:"^4",typescript:"^5"}})}];
+
+//# sourceMappingURL=OneDrive_Desktop_Programming_agendamento-policial_package_json_39ea36d2._.js.map

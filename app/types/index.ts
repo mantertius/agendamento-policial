@@ -30,6 +30,7 @@ export interface AvailabilityConfig {
   lunchBreakEnabled?: boolean; // se tem horário de almoço
   lunchBreakStart?: string; // formato HH:MM
   lunchBreakDuration?: number; // duração em minutos (30, 45, 60, etc.)
+  vacationMonths?: number[]; // meses de férias (1-12) onde não haverá atendimento
 }
 
 export interface AppState {

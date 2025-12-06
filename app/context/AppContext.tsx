@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { TimeSlot, Booking, AvailabilityConfig, AppState } from '../types';
+import { isHoliday } from '../utils/holidays';
 
 interface AppContextType extends AppState {
   addSlot: (slot: TimeSlot) => void;
@@ -227,11 +228,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
       if (!config.daysOfWeek.includes(dayOfWeek)) continue;
 
+      // Verificar se o mês atual está nos meses de férias
+      const currentMonth = d.getMonth() + 1; // getMonth() retorna 0-11, precisamos de 1-12
+      if (config.vacationMonths && config.vacationMonths.includes(currentMonth)) {
+        continue; // Pular este dia se estiver em um mês de férias
+      }
+
       // Formatar data manualmente para evitar problemas de fuso horário
       const year = d.getFullYear();
       const month = String(d.getMonth() + 1).padStart(2, '0');
       const day = String(d.getDate()).padStart(2, '0');
       const dateStr = `${year}-${month}-${day}`;
+
+      // Verificar se é feriado (nacional, estadual ou municipal)
+      const holidayCheck = isHoliday(dateStr);
+      if (holidayCheck.isHoliday) {
+        continue; // Pular este dia se for feriado
+      }
 
       const [startHour, startMin] = config.startTime.split(':').map(Number);
       const [endHour, endMin] = config.endTime.split(':').map(Number);
