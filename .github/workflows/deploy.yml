@@ -19,16 +19,19 @@ jobs:
           command_timeout: 10m
           script: |
             set -e
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-            cd ~/agendamento-policial
+          
+            # Se não estiver usando nvm na VPS nova, pode remover esse bloco:
+            # export NVM_DIR="$HOME/.nvm"
+            # [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+          
+            cd /var/www/agendamento-delegacia/agendamento-policial
+          
             echo "📥 Pulling latest code (with .next)..."
             git pull origin master
-
+          
             echo "📦 Installing dependencies (prod only)..."
             npm ci --omit=dev
-
+          
             echo "🚀 Restarting PM2..."
             pm2 restart agendamento-policial || pm2 start npm --name agendamento-policial -- run start
             pm2 save
