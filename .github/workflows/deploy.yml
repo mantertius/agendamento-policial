@@ -26,10 +26,10 @@ jobs:
               git fetch origin master
               git reset --hard origin/master
               
-              echo "📦 Installing dependencies (prod only)..."
-              npm ci --omit=dev
+              echo "📦 Pulando npm ci (deps já instaladas)..."
               
               echo "🚀 Restarting PM2..."
               pm2 restart agendamento-policial || pm2 start npm --name agendamento-policial -- run start
               pm2 save
+              
               echo "✅ Deploy complete!"
