@@ -19,14 +19,14 @@ jobs:
           command_timeout: 10m
           script: |
               set -e
-            
-              cd /root/var/www/agendamento-delegacia/agendamento-policial
 
+              cd /var/www/agendamento-delegacia/agendamento-policial
+              
               echo "📥 Resetando código para origin/master..."
               git fetch origin master
               git reset --hard origin/master
               
-              echo "📦 Pulando npm ci (deps já instaladas)..."
+              echo "📦 Pulando npm ci (deps já instaladas na VPS)..."
               
               echo "🚀 Restarting PM2..."
               pm2 restart agendamento-policial || pm2 start npm --name agendamento-policial -- run start
