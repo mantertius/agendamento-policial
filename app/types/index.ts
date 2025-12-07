@@ -5,6 +5,7 @@ export interface TimeSlot {
   endTime: string; // formato HH:MM
   isBooked: boolean;
   isDisabled?: boolean;
+  isInternal?: boolean;
   booking?: Booking;
 }
 
@@ -17,6 +18,7 @@ export interface Booking {
   email?: string;
   description?: string;
   createdAt: string;
+  status?: 'confirmed' | 'pending_reallocation' | 'cancelled';
 }
 
 export interface AvailabilityConfig {

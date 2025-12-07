@@ -103,12 +103,31 @@ function getDb() {
       id TEXT PRIMARY KEY,
       slot_id TEXT NOT NULL,
       name TEXT NOT NULL,
+      cpf TEXT,
       phone TEXT,
       email TEXT,
       description TEXT,
       created_at TEXT NOT NULL,
+      status TEXT DEFAULT 'confirmed',
       FOREIGN KEY (slot_id) REFERENCES slots(id)
     );
+    
+    -- Migração: Adicionar coluna status se não existir (para bancos existentes)
+    PRAGMA user_version;
+  `);
+    try {
+        const tableInfo = db.prepare("PRAGMA table_info(bookings)").all();
+        const hasStatusColumn = tableInfo.some((col)=>col.name === 'status');
+        if (!hasStatusColumn) {
+            db.prepare("ALTER TABLE bookings ADD COLUMN status TEXT DEFAULT 'confirmed'").run();
+        }
+    } catch (error) {
+        console.error('Erro ao verificar/migrar tabela bookings:', error);
+    }
+    db.exec(`
+    CREATE TABLE IF NOT EXISTS availability_configs (
+      id TEXT PRIMARY KEY,
+      start_date TEXT NOT NULL,
 
     CREATE TABLE IF NOT EXISTS availability_configs (
       id TEXT PRIMARY KEY,
@@ -123,9 +142,19 @@ function getDb() {
       lunch_break_duration INTEGER
     );
 
+    CREATE TABLE IF NOT EXISTS counters (
+      name TEXT PRIMARY KEY,
+      value INTEGER DEFAULT 0
+    );
+
     CREATE INDEX IF NOT EXISTS idx_slots_date ON slots(date);
     CREATE INDEX IF NOT EXISTS idx_bookings_slot_id ON bookings(slot_id);
   `);
+    // Inicializar contador de agendamentos se não existir
+    const counterExists = db.prepare(`SELECT value FROM counters WHERE name = 'booking'`).get();
+    if (!counterExists) {
+        db.prepare(`INSERT INTO counters (name, value) VALUES ('booking', 0)`).run();
+    }
     // Adicionar coluna is_disabled se não existir (migração)
     try {
         db.exec(`ALTER TABLE slots ADD COLUMN is_disabled INTEGER DEFAULT 0`);
@@ -145,6 +174,12 @@ function getDb() {
     }
     try {
         db.exec(`ALTER TABLE availability_configs ADD COLUMN lunch_break_duration INTEGER`);
+    } catch  {
+    // Coluna já existe
+    }
+    // Adicionar coluna cpf se não existir (migração)
+    try {
+        db.exec(`ALTER TABLE bookings ADD COLUMN cpf TEXT`);
     } catch  {
     // Coluna já existe
     }

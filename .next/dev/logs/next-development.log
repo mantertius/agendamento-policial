@@ -1,6 +1,6 @@
-[00:00:26.362] Server  LOG      ✓ Ready in 17.6s
-[00:00:29.414] Server  LOG      ○ Compiling /admin ...
-[00:00:37.094] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+[00:00:08.868] Server  LOG      ✓ Ready in 6s
+[00:00:25.108] Server  LOG      ○ Compiling /admin ...
+[00:00:27.846] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
 
 - A server/client branch `if (typeof window !== 'undefined')`.
 - Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
@@ -42,3 +42,7 @@ https://react.dev/link/hydration-mismatch
                     ...
           ...
 
+[00:00:28.594] Server  ERROR   C:\Users\manoe\OneDrive\Desktop\Programming\agendamento-policial\.next\dev\server\chunks\[root-of-the-server]__a149ecbc._.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:00:28.614] Server  ERROR   C:\Users\manoe\OneDrive\Desktop\Programming\agendamento-policial\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.dev.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:00:28.616] Server  ERROR   C:\Users\manoe\OneDrive\Desktop\Programming\agendamento-policial\node_modules\next\dist\server\lib\trace\tracer.js: Invalid source map. Only conformant source maps can be used to find the original code. Cause: Error: sourceMapURL could not be parsed
+[00:00:28.620] Server  ERROR   Erro ao buscar dados: SqliteError: near "CREATE": syntax error

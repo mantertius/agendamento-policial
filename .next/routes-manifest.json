@@ -29,6 +29,14 @@
       "namedRegex": "^/api/bookings/(?<nxtPid>[^/]+?)(?:/)?$"
     },
     {
+      "page": "/api/bookings/[id]/move-to-pool",
+      "regex": "^/api/bookings/([^/]+?)/move\\-to\\-pool(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/bookings/(?<nxtPid>[^/]+?)/move\\-to\\-pool(?:/)?$"
+    },
+    {
       "page": "/api/configs/[id]",
       "regex": "^/api/configs/([^/]+?)(?:/)?$",
       "routeKeys": {
@@ -75,6 +83,24 @@
       "regex": "^/api/bookings(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/bookings(?:/)?$"
+    },
+    {
+      "page": "/api/bookings/cancel-day",
+      "regex": "^/api/bookings/cancel\\-day(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/bookings/cancel\\-day(?:/)?$"
+    },
+    {
+      "page": "/api/bookings/internal",
+      "regex": "^/api/bookings/internal(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/bookings/internal(?:/)?$"
+    },
+    {
+      "page": "/api/bookings/reallocate",
+      "regex": "^/api/bookings/reallocate(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/bookings/reallocate(?:/)?$"
     },
     {
       "page": "/api/configs",

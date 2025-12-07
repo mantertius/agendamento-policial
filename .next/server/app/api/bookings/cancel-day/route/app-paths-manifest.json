@@ -1,0 +1,3 @@
+{
+  "/api/bookings/cancel-day/route": "app/api/bookings/cancel-day/route.js"
+}

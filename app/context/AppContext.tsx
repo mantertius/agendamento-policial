@@ -11,6 +11,9 @@ interface AppContextType extends AppState {
   reactivateSlot: (slotId: string) => Promise<boolean>;
   addBooking: (booking: Booking) => Promise<Booking | null>;
   cancelBooking: (bookingId: string) => Promise<boolean>;
+  moveToPool: (bookingId: string) => Promise<boolean>;
+  cancelDay: (date: string) => Promise<boolean>;
+  reallocateBooking: (bookingId: string, newSlotId: string) => Promise<boolean>;
   addAvailabilityConfig: (config: AvailabilityConfig) => Promise<void>;
   removeAvailabilityConfig: (configId: string) => Promise<void>;
   generateSlotsFromConfig: (config: AvailabilityConfig) => Promise<void>;
@@ -174,6 +177,76 @@ export function AppProvider({ children }: { children: ReactNode }) {
       return false;
     } catch (error) {
       console.error('Erro ao cancelar agendamento:', error);
+      return false;
+    }
+  };
+
+  const moveToPool = async (bookingId: string): Promise<boolean> => {
+    try {
+      const response = await fetch(`/api/bookings/${bookingId}/move-to-pool`, {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        setState(prev => {
+          const booking = prev.bookings.find(b => b.id === bookingId);
+          if (!booking) return prev;
+          
+          const updatedBooking = { ...booking, status: 'pending_reallocation' as const };
+          
+          return {
+            ...prev,
+            bookings: prev.bookings.map(b => b.id === bookingId ? updatedBooking : b),
+            slots: prev.slots.map(slot =>
+              slot.id === booking.slotId
+                ? { ...slot, isBooked: false, booking: undefined }
+                : slot
+            ),
+          };
+        });
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Erro ao mover para pool:', error);
+      return false;
+    }
+  };
+
+  const cancelDay = async (date: string): Promise<boolean> => {
+    try {
+      const response = await fetch('/api/bookings/cancel-day', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date }),
+      });
+
+      if (response.ok) {
+        await refreshData(); // Recarregar tudo para garantir consistência
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Erro ao cancelar dia:', error);
+      return false;
+    }
+  };
+
+  const reallocateBooking = async (bookingId: string, newSlotId: string): Promise<boolean> => {
+    try {
+      const response = await fetch('/api/bookings/reallocate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId, newSlotId }),
+      });
+
+      if (response.ok) {
+        await refreshData(); // Recarregar tudo
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Erro ao realocar agendamento:', error);
       return false;
     }
   };
@@ -343,6 +416,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
       reactivateSlot,
       addBooking,
       cancelBooking,
+      moveToPool,
+      cancelDay,
+      reallocateBooking,
       addAvailabilityConfig,
       removeAvailabilityConfig,
       generateSlotsFromConfig,

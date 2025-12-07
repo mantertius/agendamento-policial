@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
 import { TimeSlot } from '../types';
 import BookingModal from './BookingModal';
+import { getHolidaysForYear } from '../utils/holidays';
 
 const DAYS_OF_WEEK = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 const MONTHS = [
@@ -25,10 +26,19 @@ export default function Calendar() {
   const startingDayOfWeek = firstDayOfMonth.getDay();
   const daysInMonth = lastDayOfMonth.getDate();
 
+  const holidaysMap = useMemo(() => {
+    const holidays = getHolidaysForYear(year);
+    const map: Record<string, { name: string; type: string }> = {};
+    holidays.forEach(h => {
+      map[h.date] = { name: h.name, type: h.type };
+    });
+    return map;
+  }, [year]);
+
   const slotsByDate = useMemo(() => {
     const map: Record<string, TimeSlot[]> = {};
-    // Filtrar slots desativados
-    const activeSlots = slots.filter(s => !s.isDisabled);
+    // Filtrar slots desativados e internos (público não vê internos)
+    const activeSlots = slots.filter(s => !s.isDisabled && !s.isInternal);
     activeSlots.forEach(slot => {
       if (!map[slot.date]) {
         map[slot.date] = [];
@@ -129,26 +139,43 @@ export default function Calendar() {
           const daySlots = slotsByDate[dateStr] || [];
           // Contar apenas slots disponíveis que ainda não passaram
           const availableCount = daySlots.filter(s => !s.isBooked && !isSlotPast(s)).length;
+          
+          // Verificar se é feriado
+          const holidayInfo = holidaysMap[dateStr];
+          const isHolidayDate = !!holidayInfo;
+          const holidayName = holidayInfo?.name;
 
           return (
             <button
               key={day}
-              onClick={() => !isPast && status !== 'none' && setSelectedDate(isSelected ? null : dateStr)}
-              disabled={isPast || status === 'none'}
+              onClick={() => !isPast && status !== 'none' && !isHolidayDate && setSelectedDate(isSelected ? null : dateStr)}
+              disabled={isPast || status === 'none' || isHolidayDate}
+              title={isHolidayDate ? `🎉 ${holidayName}` : undefined}
               className={`
                 h-14 sm:h-24 rounded-lg p-1 sm:p-2 text-left transition-all relative
                 ${isPast ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : ''}
-                ${status === 'none' && !isPast ? 'bg-gray-50 text-gray-400 cursor-not-allowed' : ''}
-                ${status === 'available' && !isPast ? 'bg-green-50 hover:bg-green-100 border-2 border-green-200 cursor-pointer' : ''}
-                ${status === 'partial' && !isPast ? 'bg-yellow-50 hover:bg-yellow-100 border-2 border-yellow-200 cursor-pointer' : ''}
-                ${status === 'full' && !isPast ? 'bg-red-50 text-gray-500 border-2 border-red-200 cursor-not-allowed' : ''}
+                ${isHolidayDate && !isPast ? 'bg-purple-100 text-purple-800 border-2 border-purple-300 cursor-not-allowed' : ''}
+                ${status === 'none' && !isPast && !isHolidayDate ? 'bg-gray-50 text-gray-400 cursor-not-allowed' : ''}
+                ${status === 'available' && !isPast && !isHolidayDate ? 'bg-green-50 hover:bg-green-100 border-2 border-green-200 cursor-pointer' : ''}
+                ${status === 'partial' && !isPast && !isHolidayDate ? 'bg-yellow-50 hover:bg-yellow-100 border-2 border-yellow-200 cursor-pointer' : ''}
+                ${status === 'full' && !isPast && !isHolidayDate ? 'bg-red-50 text-gray-500 border-2 border-red-200 cursor-not-allowed' : ''}
                 ${isSelected ? 'ring-2 ring-blue-500 ring-offset-1 sm:ring-offset-2' : ''}
               `}
             >
               <span className={`text-xs sm:text-sm font-medium ${dateStr === today ? 'bg-blue-600 text-white rounded-full w-5 h-5 sm:w-7 sm:h-7 flex items-center justify-center' : ''}`}>
                 {day}
               </span>
-              {status !== 'none' && !isPast && (
+              {/* Indicador de feriado */}
+              {isHolidayDate && !isPast && (
+                <div className="mt-0.5 sm:mt-1 hidden sm:block">
+                  <span className="text-xs text-purple-700 truncate block" title={holidayName}>
+                    🎉 {holidayName && holidayName.length > 10 
+                      ? holidayName.substring(0, 10) + '...' 
+                      : holidayName}
+                  </span>
+                </div>
+              )}
+              {status !== 'none' && !isPast && !isHolidayDate && (
                 <div className="mt-0.5 sm:mt-1 hidden sm:block">
                   <span className={`text-xs ${status === 'full' ? 'text-red-600' : 'text-green-600'}`}>
                     {status === 'full' ? 'Lotado' : `${availableCount} vaga${availableCount !== 1 ? 's' : ''}`}
@@ -156,7 +183,12 @@ export default function Calendar() {
                 </div>
               )}
               {/* Indicador mobile */}
-              {status !== 'none' && !isPast && (
+              {isHolidayDate && !isPast && (
+                <div className="sm:hidden absolute bottom-1 left-1/2 transform -translate-x-1/2">
+                  <span className="text-xs">🎉</span>
+                </div>
+              )}
+              {status !== 'none' && !isPast && !isHolidayDate && (
                 <div className="sm:hidden absolute bottom-1 left-1/2 transform -translate-x-1/2">
                   <div className={`w-1.5 h-1.5 rounded-full ${status === 'full' ? 'bg-red-500' : status === 'partial' ? 'bg-yellow-500' : 'bg-green-500'}`}></div>
                 </div>
@@ -222,6 +254,10 @@ export default function Calendar() {
         <div className="flex items-center gap-1 sm:gap-2">
           <div className="w-3 h-3 sm:w-4 sm:h-4 rounded bg-red-200 border border-red-300"></div>
           <span className="text-gray-600">Lotado</span>
+        </div>
+        <div className="flex items-center gap-1 sm:gap-2">
+          <div className="w-3 h-3 sm:w-4 sm:h-4 rounded bg-purple-200 border border-purple-300"></div>
+          <span className="text-gray-600">Feriado</span>
         </div>
       </div>
 

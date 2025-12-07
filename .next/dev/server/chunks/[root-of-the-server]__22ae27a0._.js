@@ -108,8 +108,26 @@ function getDb() {
       email TEXT,
       description TEXT,
       created_at TEXT NOT NULL,
+      status TEXT DEFAULT 'confirmed',
       FOREIGN KEY (slot_id) REFERENCES slots(id)
     );
+    
+    -- Migração: Adicionar coluna status se não existir (para bancos existentes)
+    PRAGMA user_version;
+  `);
+    try {
+        const tableInfo = db.prepare("PRAGMA table_info(bookings)").all();
+        const hasStatusColumn = tableInfo.some((col)=>col.name === 'status');
+        if (!hasStatusColumn) {
+            db.prepare("ALTER TABLE bookings ADD COLUMN status TEXT DEFAULT 'confirmed'").run();
+        }
+    } catch (error) {
+        console.error('Erro ao verificar/migrar tabela bookings:', error);
+    }
+    db.exec(`
+    CREATE TABLE IF NOT EXISTS availability_configs (
+      id TEXT PRIMARY KEY,
+      start_date TEXT NOT NULL,
 
     CREATE TABLE IF NOT EXISTS availability_configs (
       id TEXT PRIMARY KEY,
@@ -164,6 +182,16 @@ function getDb() {
         db.exec(`ALTER TABLE bookings ADD COLUMN cpf TEXT`);
     } catch  {
     // Coluna já existe
+    }
+    // Migração: Adicionar coluna is_internal se não existir
+    try {
+        const slotTableInfo = db.prepare("PRAGMA table_info(slots)").all();
+        const hasIsInternalColumn = slotTableInfo.some((col)=>col.name === 'is_internal');
+        if (!hasIsInternalColumn) {
+            db.prepare("ALTER TABLE slots ADD COLUMN is_internal INTEGER DEFAULT 0").run();
+        }
+    } catch (error) {
+        console.error('Erro ao verificar/migrar tabela slots (is_internal):', error);
     }
     return db;
 }

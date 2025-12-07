@@ -1674,9 +1674,11 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Progr
 var __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/OneDrive/Desktop/Programming/agendamento-policial/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$app$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/OneDrive/Desktop/Programming/agendamento-policial/app/context/AppContext.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$app$2f$components$2f$BookingModal$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/BookingModal.tsx [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$app$2f$utils$2f$holidays$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/OneDrive/Desktop/Programming/agendamento-policial/app/utils/holidays.ts [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
 'use client';
+;
 ;
 ;
 ;
@@ -1715,12 +1717,29 @@ function Calendar() {
     const lastDayOfMonth = new Date(year, month + 1, 0);
     const startingDayOfWeek = firstDayOfMonth.getDay();
     const daysInMonth = lastDayOfMonth.getDate();
+    const holidaysMap = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
+        "Calendar.useMemo[holidaysMap]": ()=>{
+            const holidays = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$app$2f$utils$2f$holidays$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getHolidaysForYear"])(year);
+            const map = {};
+            holidays.forEach({
+                "Calendar.useMemo[holidaysMap]": (h)=>{
+                    map[h.date] = {
+                        name: h.name,
+                        type: h.type
+                    };
+                }
+            }["Calendar.useMemo[holidaysMap]"]);
+            return map;
+        }
+    }["Calendar.useMemo[holidaysMap]"], [
+        year
+    ]);
     const slotsByDate = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
         "Calendar.useMemo[slotsByDate]": ()=>{
             const map = {};
-            // Filtrar slots desativados
+            // Filtrar slots desativados e internos (público não vê internos)
             const activeSlots = slots.filter({
-                "Calendar.useMemo[slotsByDate].activeSlots": (s)=>!s.isDisabled
+                "Calendar.useMemo[slotsByDate].activeSlots": (s)=>!s.isDisabled && !s.isInternal
             }["Calendar.useMemo[slotsByDate].activeSlots"]);
             activeSlots.forEach({
                 "Calendar.useMemo[slotsByDate]": (slot)=>{
@@ -1773,12 +1792,12 @@ function Calendar() {
                 className: "animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"
             }, void 0, false, {
                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                lineNumber: 76,
+                lineNumber: 86,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-            lineNumber: 75,
+            lineNumber: 85,
             columnNumber: 7
         }, this);
     }
@@ -1803,17 +1822,17 @@ function Calendar() {
                                 d: "M15 19l-7-7 7-7"
                             }, void 0, false, {
                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                                lineNumber: 90,
+                                lineNumber: 100,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                            lineNumber: 89,
+                            lineNumber: 99,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                        lineNumber: 85,
+                        lineNumber: 95,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -1825,7 +1844,7 @@ function Calendar() {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                        lineNumber: 93,
+                        lineNumber: 103,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1843,23 +1862,23 @@ function Calendar() {
                                 d: "M9 5l7 7-7 7"
                             }, void 0, false, {
                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                                lineNumber: 101,
+                                lineNumber: 111,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                            lineNumber: 100,
+                            lineNumber: 110,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                        lineNumber: 96,
+                        lineNumber: 106,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                lineNumber: 84,
+                lineNumber: 94,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1869,12 +1888,12 @@ function Calendar() {
                         children: day
                     }, day, false, {
                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                        lineNumber: 109,
+                        lineNumber: 119,
                         columnNumber: 11
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                lineNumber: 107,
+                lineNumber: 117,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1886,7 +1905,7 @@ function Calendar() {
                             className: "h-14 sm:h-24 bg-gray-50 rounded-lg"
                         }, `empty-${i}`, false, {
                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                            lineNumber: 119,
+                            lineNumber: 129,
                             columnNumber: 11
                         }, this)),
                     Array.from({
@@ -1900,16 +1919,22 @@ function Calendar() {
                         const daySlots = slotsByDate[dateStr] || [];
                         // Contar apenas slots disponíveis que ainda não passaram
                         const availableCount = daySlots.filter((s)=>!s.isBooked && !isSlotPast(s)).length;
+                        // Verificar se é feriado
+                        const holidayInfo = holidaysMap[dateStr];
+                        const isHolidayDate = !!holidayInfo;
+                        const holidayName = holidayInfo?.name;
                         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                            onClick: ()=>!isPast && status !== 'none' && setSelectedDate(isSelected ? null : dateStr),
-                            disabled: isPast || status === 'none',
+                            onClick: ()=>!isPast && status !== 'none' && !isHolidayDate && setSelectedDate(isSelected ? null : dateStr),
+                            disabled: isPast || status === 'none' || isHolidayDate,
+                            title: isHolidayDate ? `🎉 ${holidayName}` : undefined,
                             className: `
                 h-14 sm:h-24 rounded-lg p-1 sm:p-2 text-left transition-all relative
                 ${isPast ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : ''}
-                ${status === 'none' && !isPast ? 'bg-gray-50 text-gray-400 cursor-not-allowed' : ''}
-                ${status === 'available' && !isPast ? 'bg-green-50 hover:bg-green-100 border-2 border-green-200 cursor-pointer' : ''}
-                ${status === 'partial' && !isPast ? 'bg-yellow-50 hover:bg-yellow-100 border-2 border-yellow-200 cursor-pointer' : ''}
-                ${status === 'full' && !isPast ? 'bg-red-50 text-gray-500 border-2 border-red-200 cursor-not-allowed' : ''}
+                ${isHolidayDate && !isPast ? 'bg-purple-100 text-purple-800 border-2 border-purple-300 cursor-not-allowed' : ''}
+                ${status === 'none' && !isPast && !isHolidayDate ? 'bg-gray-50 text-gray-400 cursor-not-allowed' : ''}
+                ${status === 'available' && !isPast && !isHolidayDate ? 'bg-green-50 hover:bg-green-100 border-2 border-green-200 cursor-pointer' : ''}
+                ${status === 'partial' && !isPast && !isHolidayDate ? 'bg-yellow-50 hover:bg-yellow-100 border-2 border-yellow-200 cursor-pointer' : ''}
+                ${status === 'full' && !isPast && !isHolidayDate ? 'bg-red-50 text-gray-500 border-2 border-red-200 cursor-not-allowed' : ''}
                 ${isSelected ? 'ring-2 ring-blue-500 ring-offset-1 sm:ring-offset-2' : ''}
               `,
                             children: [
@@ -1918,49 +1943,83 @@ function Calendar() {
                                     children: day
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                                    lineNumber: 148,
+                                    lineNumber: 165,
                                     columnNumber: 15
                                 }, this),
-                                status !== 'none' && !isPast && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                isHolidayDate && !isPast && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "mt-0.5 sm:mt-1 hidden sm:block",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "text-xs text-purple-700 truncate block",
+                                        title: holidayName,
+                                        children: [
+                                            "🎉 ",
+                                            holidayName && holidayName.length > 10 ? holidayName.substring(0, 10) + '...' : holidayName
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
+                                        lineNumber: 171,
+                                        columnNumber: 19
+                                    }, this)
+                                }, void 0, false, {
+                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
+                                    lineNumber: 170,
+                                    columnNumber: 17
+                                }, this),
+                                status !== 'none' && !isPast && !isHolidayDate && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "mt-0.5 sm:mt-1 hidden sm:block",
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         className: `text-xs ${status === 'full' ? 'text-red-600' : 'text-green-600'}`,
                                         children: status === 'full' ? 'Lotado' : `${availableCount} vaga${availableCount !== 1 ? 's' : ''}`
                                     }, void 0, false, {
                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                                        lineNumber: 153,
+                                        lineNumber: 180,
                                         columnNumber: 19
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                                    lineNumber: 152,
+                                    lineNumber: 179,
                                     columnNumber: 17
                                 }, this),
-                                status !== 'none' && !isPast && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                isHolidayDate && !isPast && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "sm:hidden absolute bottom-1 left-1/2 transform -translate-x-1/2",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "text-xs",
+                                        children: "🎉"
+                                    }, void 0, false, {
+                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
+                                        lineNumber: 188,
+                                        columnNumber: 19
+                                    }, this)
+                                }, void 0, false, {
+                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
+                                    lineNumber: 187,
+                                    columnNumber: 17
+                                }, this),
+                                status !== 'none' && !isPast && !isHolidayDate && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "sm:hidden absolute bottom-1 left-1/2 transform -translate-x-1/2",
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: `w-1.5 h-1.5 rounded-full ${status === 'full' ? 'bg-red-500' : status === 'partial' ? 'bg-yellow-500' : 'bg-green-500'}`
                                     }, void 0, false, {
                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                                        lineNumber: 161,
+                                        lineNumber: 193,
                                         columnNumber: 19
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                                    lineNumber: 160,
+                                    lineNumber: 192,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, day, true, {
                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                            lineNumber: 134,
+                            lineNumber: 149,
                             columnNumber: 13
                         }, this);
                     })
                 ]
             }, void 0, true, {
                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                lineNumber: 116,
+                lineNumber: 126,
                 columnNumber: 7
             }, this),
             selectedDate && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1978,7 +2037,7 @@ function Calendar() {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                        lineNumber: 172,
+                        lineNumber: 204,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2001,7 +2060,7 @@ function Calendar() {
                                         children: slot.startTime
                                     }, void 0, false, {
                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                                        lineNumber: 199,
+                                        lineNumber: 231,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2009,7 +2068,7 @@ function Calendar() {
                                         children: "-"
                                     }, void 0, false, {
                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                                        lineNumber: 200,
+                                        lineNumber: 232,
                                         columnNumber: 19
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2017,7 +2076,7 @@ function Calendar() {
                                         children: slot.endTime
                                     }, void 0, false, {
                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                                        lineNumber: 201,
+                                        lineNumber: 233,
                                         columnNumber: 19
                                     }, this),
                                     isPastSlot && !slot.isBooked && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2025,25 +2084,25 @@ function Calendar() {
                                         children: "Passou"
                                     }, void 0, false, {
                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                                        lineNumber: 203,
+                                        lineNumber: 235,
                                         columnNumber: 21
                                     }, this)
                                 ]
                             }, slot.id, true, {
                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                                lineNumber: 185,
+                                lineNumber: 217,
                                 columnNumber: 17
                             }, this);
                         })
                     }, void 0, false, {
                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                        lineNumber: 179,
+                        lineNumber: 211,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                lineNumber: 171,
+                lineNumber: 203,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2056,7 +2115,7 @@ function Calendar() {
                                 className: "w-3 h-3 sm:w-4 sm:h-4 rounded bg-green-200 border border-green-300"
                             }, void 0, false, {
                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                                lineNumber: 215,
+                                lineNumber: 247,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2064,13 +2123,13 @@ function Calendar() {
                                 children: "Disponível"
                             }, void 0, false, {
                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                                lineNumber: 216,
+                                lineNumber: 248,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                        lineNumber: 214,
+                        lineNumber: 246,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2080,7 +2139,7 @@ function Calendar() {
                                 className: "w-3 h-3 sm:w-4 sm:h-4 rounded bg-yellow-200 border border-yellow-300"
                             }, void 0, false, {
                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                                lineNumber: 219,
+                                lineNumber: 251,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2088,13 +2147,13 @@ function Calendar() {
                                 children: "Parcial"
                             }, void 0, false, {
                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                                lineNumber: 220,
+                                lineNumber: 252,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                        lineNumber: 218,
+                        lineNumber: 250,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2104,7 +2163,7 @@ function Calendar() {
                                 className: "w-3 h-3 sm:w-4 sm:h-4 rounded bg-red-200 border border-red-300"
                             }, void 0, false, {
                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                                lineNumber: 223,
+                                lineNumber: 255,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2112,19 +2171,43 @@ function Calendar() {
                                 children: "Lotado"
                             }, void 0, false, {
                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                                lineNumber: 224,
+                                lineNumber: 256,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                        lineNumber: 222,
+                        lineNumber: 254,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "flex items-center gap-1 sm:gap-2",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "w-3 h-3 sm:w-4 sm:h-4 rounded bg-purple-200 border border-purple-300"
+                            }, void 0, false, {
+                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
+                                lineNumber: 259,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                className: "text-gray-600",
+                                children: "Feriado"
+                            }, void 0, false, {
+                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
+                                lineNumber: 260,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
+                        lineNumber: 258,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                lineNumber: 213,
+                lineNumber: 245,
                 columnNumber: 7
             }, this),
             selectedSlot && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$app$2f$components$2f$BookingModal$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -2132,17 +2215,17 @@ function Calendar() {
                 onClose: ()=>setSelectedSlot(null)
             }, void 0, false, {
                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-                lineNumber: 230,
+                lineNumber: 266,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/components/Calendar.tsx",
-        lineNumber: 82,
+        lineNumber: 92,
         columnNumber: 5
     }, this);
 }
-_s(Calendar, "FbUGTozvbGxFmCo928JJs2hpOy0=", false, function() {
+_s(Calendar, "fwri3dEXelDp7IFqcuI+9G4dP/w=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$app$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useApp"]
     ];
@@ -2156,7 +2239,7 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 }),
 "[project]/OneDrive/Desktop/Programming/agendamento-policial/package.json (json)", ((__turbopack_context__) => {
 
-__turbopack_context__.v({"name":"agendamento-policial","version":"0.1.0","private":true,"scripts":{"dev":"next dev","build":"next build","start":"next start","lint":"eslint"},"dependencies":{"better-sqlite3":"^12.4.6","next":"16.0.5","nodemailer":"^7.0.11","react":"19.2.0","react-dom":"19.2.0","sharp":"^0.34.5"},"devDependencies":{"@tailwindcss/postcss":"^4","@types/better-sqlite3":"^7.6.13","@types/node":"^20","@types/nodemailer":"^7.0.4","@types/react":"^19","@types/react-dom":"^19","eslint":"^9","eslint-config-next":"16.0.5","tailwindcss":"^4","typescript":"^5"}});}),
+__turbopack_context__.v({"name":"agendamento-policial","version":"0.1.0","private":true,"scripts":{"dev":"next dev","build":"next build","start":"next start","lint":"eslint"},"dependencies":{"better-sqlite3":"^12.4.6","next":"16.0.5","nodemailer":"^7.0.11","react":"19.2.0","react-dom":"19.2.0","sharp":"^0.34.5"},"devDependencies":{"@tailwindcss/postcss":"^4","@testing-library/dom":"^10.4.1","@testing-library/jest-dom":"^6.9.1","@testing-library/react":"^16.3.0","@types/better-sqlite3":"^7.6.13","@types/jest":"^30.0.0","@types/node":"^20","@types/nodemailer":"^7.0.4","@types/react":"^19","@types/react-dom":"^19","baseline-browser-mapping":"^2.9.4","eslint":"^9","eslint-config-next":"16.0.5","jest":"^30.2.0","jest-environment-jsdom":"^30.2.0","node-mocks-http":"^1.17.2","tailwindcss":"^4","ts-jest":"^29.4.6","ts-node":"^10.9.2","typescript":"^5"}});}),
 "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/page.tsx [app-client] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 

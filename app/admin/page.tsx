@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useApp } from '../context/AppContext';
-import { AvailabilityConfig } from '../types';
-import { getHolidaysForYear, FIXED_HOLIDAYS } from '../utils/holidays';
+import { AvailabilityConfig, Booking } from '../types';
+import { getHolidaysForYear, FIXED_HOLIDAYS, isHoliday } from '../utils/holidays';
 
 // Buscar senha administrativa de .env.local (exportar como NEXT_PUBLIC_ADMIN_PASSWORD para uso no cliente)
 // Atenção: expor senhas no cliente não é inseguro — prefira validar no servidor (API) em produção.
@@ -43,6 +43,9 @@ export default function AdminPage() {
     removeAvailabilityConfig,
     generateSlotsFromConfig,
     cancelBooking,
+    moveToPool,
+    cancelDay,
+    reallocateBooking,
     disableSlot,
     reactivateSlot,
     clearAllSlots
@@ -51,11 +54,33 @@ export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(getInitialAuth);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [activeTab, setActiveTab] = useState<'config' | 'bookings' | 'calendar' | 'holidays'>('config');
+  const [activeTab, setActiveTab] = useState<'config' | 'bookings' | 'calendar' | 'holidays' | 'reallocation' | 'internal'>('config');
   const [selectedDateView, setSelectedDateView] = useState<string | null>(null);
   const [filterView, setFilterView] = useState<'all' | 'booked' | 'available' | 'disabled'>('all');
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [searchQuery, setSearchQuery] = useState('');
+  const [reallocationBooking, setReallocationBooking] = useState<Booking | null>(null); // Booking sendo realocado
+
+  // Internal Booking State
+  const [internalDate, setInternalDate] = useState('');
+  const [internalStartTime, setInternalStartTime] = useState('');
+  const [internalEndTime, setInternalEndTime] = useState('');
+  const [internalName, setInternalName] = useState('');
+  const [internalEmail, setInternalEmail] = useState('');
+  const [internalPhone, setInternalPhone] = useState('');
+  const [internalCpf, setInternalCpf] = useState('');
+  const [internalDescription, setInternalDescription] = useState('');
+  const [internalLoading, setInternalLoading] = useState(false);
+
+  const holidaysMap = useMemo(() => {
+    const year = calendarDate.getFullYear();
+    const holidays = getHolidaysForYear(year);
+    const map: Record<string, { name: string; type: string }> = {};
+    holidays.forEach(h => {
+      map[h.date] = { name: h.name, type: h.type };
+    });
+    return map;
+  }, [calendarDate]);
 
   // Form state
   const [startDate, setStartDate] = useState('');
@@ -142,6 +167,49 @@ export default function AdminPage() {
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr + 'T12:00:00').toLocaleDateString('pt-BR');
+  };
+
+  const handleInternalBooking = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setInternalLoading(true);
+
+    try {
+      const response = await fetch('/api/bookings/internal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date: internalDate,
+          startTime: internalStartTime,
+          endTime: internalEndTime,
+          name: internalName,
+          email: internalEmail,
+          phone: internalPhone,
+          cpf: internalCpf,
+          description: internalDescription
+        })
+      });
+
+      if (response.ok) {
+        alert('Agendamento interno criado com sucesso!');
+        setInternalDate('');
+        setInternalStartTime('');
+        setInternalEndTime('');
+        setInternalName('');
+        setInternalEmail('');
+        setInternalPhone('');
+        setInternalCpf('');
+        setInternalDescription('');
+        window.location.reload();
+      } else {
+        const data = await response.json();
+        alert(`Erro: ${data.error}`);
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Erro ao criar agendamento');
+    } finally {
+      setInternalLoading(false);
+    }
   };
 
   // Tela de Login
@@ -293,6 +361,26 @@ export default function AdminPage() {
               }`}
             >
               Feriados
+            </button>
+            <button
+              onClick={() => setActiveTab('reallocation')}
+              className={`px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
+                activeTab === 'reallocation'
+                  ? 'border-b-2 border-blue-600 text-blue-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Realocação ({bookings.filter(b => b.status === 'pending_reallocation').length})
+            </button>
+            <button
+              onClick={() => setActiveTab('internal')}
+              className={`px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
+                activeTab === 'internal'
+                  ? 'border-b-2 border-blue-600 text-blue-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Agendamento Interno
             </button>
             <Link
               href="/relatorio"
@@ -668,22 +756,33 @@ export default function AdminPage() {
                     const isSelected = selectedDateView === dateStr;
                     const isToday = dateStr === today;
                     
+                    // Verificar se é feriado
+                    const holidayInfo = holidaysMap[dateStr];
+                    const isHolidayDate = !!holidayInfo;
+                    const holidayName = holidayInfo?.name;
+                    
                     cells.push(
                       <button
                         key={day}
                         onClick={() => setSelectedDateView(isSelected ? null : dateStr)}
+                        title={isHolidayDate ? `🎉 ${holidayName}` : undefined}
                         className={`h-8 sm:h-10 rounded-lg text-xs sm:text-sm font-medium transition-all relative ${
                           isSelected ? 'ring-2 ring-blue-500 ring-offset-1' : ''
                         } ${
-                          hasSlots
+                          isHolidayDate
+                            ? 'bg-purple-200 text-purple-800 hover:bg-purple-300 border border-purple-400'
+                            : hasSlots
                             ? bookedCount > 0
-                              ? 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                              ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
                               : 'bg-green-100 text-green-700 hover:bg-green-200'
                             : 'text-gray-400 hover:bg-gray-50'
                         } ${isToday ? 'font-bold' : ''}`}
                       >
                         {day}
-                        {bookedCount > 0 && (
+                        {isHolidayDate && (
+                          <span className="absolute -top-1 -right-1 text-[10px]">🎉</span>
+                        )}
+                        {bookedCount > 0 && !isHolidayDate && (
                           <span className="absolute -top-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-purple-600 text-white text-[10px] sm:text-xs rounded-full flex items-center justify-center">
                             {bookedCount}
                           </span>
@@ -698,17 +797,31 @@ export default function AdminPage() {
 
               {/* Lista de slots do dia selecionado ou todos os agendados */}
               <div className="border-t border-gray-200 pt-4 sm:pt-6">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">
-                  {selectedDateView
-                    ? `Horários de ${formatDate(selectedDateView)}`
-                    : filterView === 'booked'
-                    ? 'Todos os Agendamentos'
-                    : filterView === 'available'
-                    ? 'Horários Disponíveis'
-                    : filterView === 'disabled'
-                    ? 'Horários Desativados'
-                    : 'Todos os Horários'}
-                </h3>
+                <div className="flex justify-between items-center mb-3 sm:mb-4">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-800">
+                    {selectedDateView
+                      ? `Horários de ${formatDate(selectedDateView)}`
+                      : filterView === 'booked'
+                      ? 'Todos os Agendamentos'
+                      : filterView === 'available'
+                      ? 'Horários Disponíveis'
+                      : filterView === 'disabled'
+                      ? 'Horários Desativados'
+                      : 'Todos os Horários'}
+                  </h3>
+                  {selectedDateView && (
+                    <button
+                      onClick={() => {
+                        if (confirm(`ATENÇÃO: Isso cancelará TODOS os agendamentos do dia ${formatDate(selectedDateView)} e enviará emails de aviso para realocação. Deseja continuar?`)) {
+                          cancelDay(selectedDateView);
+                        }
+                      }}
+                      className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-xs sm:text-sm font-medium"
+                    >
+                      Cancelar Dia Inteiro
+                    </button>
+                  )}
+                </div>
                 
                 {(() => {
                   let filteredSlots = selectedDateView
@@ -989,16 +1102,37 @@ export default function AdminPage() {
                                 <p className="text-xs sm:text-sm text-gray-500 mt-2 italic">&ldquo;{booking.description}&rdquo;</p>
                               )}
                             </div>
-                            <button
-                              onClick={() => {
-                                if (confirm('Tem certeza que deseja cancelar este agendamento?')) {
-                                  cancelBooking(booking.id);
-                                }
-                              }}
-                              className="px-3 py-1.5 sm:py-1 text-red-600 hover:bg-red-50 rounded-lg transition-colors text-xs sm:text-sm self-end sm:self-start shrink-0"
-                            >
-                              Cancelar
-                            </button>
+                            <div className="flex flex-col sm:flex-row gap-2 self-end sm:self-start shrink-0">
+                              <button
+                                onClick={() => {
+                                  setReallocationBooking(booking);
+                                  setActiveTab('reallocation');
+                                }}
+                                className="px-3 py-1.5 sm:py-1 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors text-xs sm:text-sm"
+                              >
+                                Realocar
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (confirm('Tem certeza que deseja mover este agendamento para o pool de realocação?')) {
+                                    moveToPool(booking.id);
+                                  }
+                                }}
+                                className="px-3 py-1.5 sm:py-1 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors text-xs sm:text-sm"
+                              >
+                                Mover p/ Pool
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (confirm('Tem certeza que deseja cancelar este agendamento?')) {
+                                    cancelBooking(booking.id);
+                                  }
+                                }}
+                                className="px-3 py-1.5 sm:py-1 text-red-600 hover:bg-red-50 rounded-lg transition-colors text-xs sm:text-sm"
+                              >
+                                Cancelar
+                              </button>
+                            </div>
                           </div>
                         </div>
                       );
@@ -1138,9 +1272,228 @@ export default function AdminPage() {
                 </div>
               </div>
             </div>
+          ) : activeTab === 'reallocation' ? (
+            /* Visualização de Realocação */
+            <div className="space-y-6">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <svg className="w-6 h-6 text-blue-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <h4 className="font-medium text-blue-800">Pool de Realocação</h4>
+                    <p className="text-sm text-blue-700 mt-1">
+                      Aqui estão listados os agendamentos que foram cancelados administrativamente (ex: cancelamento do dia) e precisam ser realocados.
+                      Ao realocar, o usuário receberá um email com o novo horário.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {reallocationBooking ? (
+                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-lg font-bold text-gray-800">
+                      Realocando: {reallocationBooking.name}
+                    </h3>
+                    <button
+                      onClick={() => setReallocationBooking(null)}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+
+                  <p className="text-sm text-gray-600 mb-4">Selecione um novo horário disponível:</p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-[400px] overflow-y-auto">
+                    {slots
+                      .filter(s => !s.isBooked && !s.isDisabled && s.date >= new Date().toISOString().split('T')[0])
+                      .sort((a, b) => `${a.date}${a.startTime}`.localeCompare(`${b.date}${b.startTime}`))
+                      .slice(0, 50) // Mostrar apenas os primeiros 50 slots livres para não travar
+                      .map(slot => (
+                        <button
+                          key={slot.id}
+                          onClick={() => {
+                            if (confirm(`Confirmar realocação para ${formatDate(slot.date)} às ${slot.startTime}?`)) {
+                              reallocateBooking(reallocationBooking.id, slot.id).then(success => {
+                                if (success) setReallocationBooking(null);
+                              });
+                            }
+                          }}
+                          className="p-3 border border-green-200 bg-green-50 hover:bg-green-100 rounded-lg text-left transition-colors"
+                        >
+                          <p className="font-medium text-green-800">{formatDate(slot.date)}</p>
+                          <p className="text-sm text-green-700">{slot.startTime} - {slot.endTime}</p>
+                        </button>
+                      ))}
+                  </div>
+                  {slots.filter(s => !s.isBooked && !s.isDisabled && s.date >= new Date().toISOString().split('T')[0]).length === 0 && (
+                    <p className="text-center text-gray-500 py-8">Não há horários disponíveis futuros.</p>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {bookings.filter(b => b.status === 'pending_reallocation').length === 0 ? (
+                    <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+                      <p className="text-gray-500">Nenhum agendamento pendente de realocação.</p>
+                    </div>
+                  ) : (
+                    bookings
+                      .filter(b => b.status === 'pending_reallocation')
+                      .map(booking => (
+                        <div key={booking.id} className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-sm">
+                          <div>
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-mono rounded">
+                                {booking.id}
+                              </span>
+                              <h4 className="font-semibold text-gray-800">{booking.name}</h4>
+                            </div>
+                            <div className="text-sm text-gray-600 space-y-0.5">
+                              {booking.phone && <p>📱 {booking.phone}</p>}
+                              {booking.email && <p>✉️ {booking.email}</p>}
+                              <p className="text-xs text-gray-400 mt-1">Originalmente agendado em: {new Date(booking.createdAt).toLocaleDateString('pt-BR')}</p>
+                            </div>
+                          </div>
+                          <div className="flex gap-2 w-full sm:w-auto">
+                            <button
+                              onClick={() => setReallocationBooking(booking)}
+                              className="flex-1 sm:flex-none px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                            >
+                              Realocar
+                            </button>
+                            <button
+                              onClick={() => {
+                                if (confirm('Tem certeza que deseja cancelar definitivamente este agendamento?')) {
+                                  cancelBooking(booking.id);
+                                }
+                              }}
+                              className="flex-1 sm:flex-none px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium"
+                            >
+                              Cancelar
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                  )}
+                </div>
+              )}
+            </div>
+          ) : activeTab === 'internal' ? (
+            /* Agendamento Interno */
+            <div className="max-w-2xl mx-auto">
+              <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+                <h3 className="text-lg font-bold text-gray-800 mb-4">Novo Agendamento Interno</h3>
+                <p className="text-sm text-gray-600 mb-6">
+                  Use este formulário para criar agendamentos em qualquer data e horário, ignorando regras de disponibilidade pública.
+                  Estes agendamentos não aparecerão como disponíveis na agenda pública.
+                </p>
+
+                <form onSubmit={handleInternalBooking} className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Data</label>
+                      <input
+                        type="date"
+                        required
+                        value={internalDate}
+                        onChange={(e) => setInternalDate(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Início</label>
+                        <input
+                          type="time"
+                          required
+                          value={internalStartTime}
+                          onChange={(e) => setInternalStartTime(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Fim</label>
+                        <input
+                          type="time"
+                          required
+                          value={internalEndTime}
+                          onChange={(e) => setInternalEndTime(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
+                      <input
+                        type="text"
+                        required
+                        value={internalName}
+                        onChange={(e) => setInternalName(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">CPF</label>
+                      <input
+                        type="text"
+                        value={internalCpf}
+                        onChange={(e) => setInternalCpf(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                      <input
+                        type="email"
+                        value={internalEmail}
+                        onChange={(e) => setInternalEmail(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+                      <input
+                        type="text"
+                        value={internalPhone}
+                        onChange={(e) => setInternalPhone(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                      />
+                    </div>
+                  </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Descrição
+                  </label>
+                  <textarea
+                    value={internalDescription}
+                    onChange={(e) => setInternalDescription(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    placeholder="Descrição do agendamento"
+                    rows={3}
+                  />
+                </div>
+
+                <div className="flex gap-4">
+                  <button
+                    type="submit"
+                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  >
+                    Criar Agendamento Interno
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
           ) : null}
         </div>
       </div>
-    </div>
-  );
-}
+      </div>
+    );
+  }
+  

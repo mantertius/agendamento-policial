@@ -136,7 +136,9 @@ module.exports = mod;
 
 __turbopack_context__.s([
     "POST",
-    ()=>POST
+    ()=>POST,
+    "sendEmail",
+    ()=>sendEmail
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$server$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/OneDrive/Desktop/Programming/agendamento-policial/node_modules/next/server.js [app-route] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$nodemailer$2f$lib$2f$nodemailer$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/OneDrive/Desktop/Programming/agendamento-policial/node_modules/nodemailer/lib/nodemailer.js [app-route] (ecmascript)");
@@ -153,6 +155,15 @@ const transporter = __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$
         pass: process.env.GMAIL_APP_PASSWORD
     }
 });
+async function sendEmail({ to, subject, html }) {
+    const mailOptions = {
+        from: process.env.GMAIL_USER,
+        to,
+        subject,
+        html
+    };
+    return transporter.sendMail(mailOptions);
+}
 async function POST(request) {
     try {
         const { to, subject, html } = await request.json();

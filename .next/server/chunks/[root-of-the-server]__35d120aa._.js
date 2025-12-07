@@ -1,0 +1,53 @@
+module.exports=[22734,(e,t,r)=>{t.exports=e.x("fs",()=>require("fs"))},93695,(e,t,r)=>{t.exports=e.x("next/dist/shared/lib/no-fallback-error.external.js",()=>require("next/dist/shared/lib/no-fallback-error.external.js"))},70406,(e,t,r)=>{t.exports=e.x("next/dist/compiled/@opentelemetry/api",()=>require("next/dist/compiled/@opentelemetry/api"))},18622,(e,t,r)=>{t.exports=e.x("next/dist/compiled/next-server/app-page-turbo.runtime.prod.js",()=>require("next/dist/compiled/next-server/app-page-turbo.runtime.prod.js"))},56704,(e,t,r)=>{t.exports=e.x("next/dist/server/app-render/work-async-storage.external.js",()=>require("next/dist/server/app-render/work-async-storage.external.js"))},32319,(e,t,r)=>{t.exports=e.x("next/dist/server/app-render/work-unit-async-storage.external.js",()=>require("next/dist/server/app-render/work-unit-async-storage.external.js"))},24725,(e,t,r)=>{t.exports=e.x("next/dist/server/app-render/after-task-async-storage.external.js",()=>require("next/dist/server/app-render/after-task-async-storage.external.js"))},14747,(e,t,r)=>{t.exports=e.x("path",()=>require("path"))},25372,(e,t,r)=>{t.exports=e.x("better-sqlite3",()=>require("better-sqlite3"))},23182,e=>{"use strict";var t=e.i(25372),r=e.i(14747),a=e.i(22734);let n=r.default.join(process.cwd(),"data","agendamento.db"),i=null;e.s(["default",0,function(){if(i)return i;let e=r.default.dirname(n);a.default.existsSync(e)||a.default.mkdirSync(e,{recursive:!0}),(i=new t.default(n)).pragma("journal_mode = WAL"),i.exec(`
+    CREATE TABLE IF NOT EXISTS slots (
+      id TEXT PRIMARY KEY,
+      date TEXT NOT NULL,
+      start_time TEXT NOT NULL,
+      end_time TEXT NOT NULL,
+      is_booked INTEGER DEFAULT 0,
+      is_disabled INTEGER DEFAULT 0
+    );
+
+    CREATE TABLE IF NOT EXISTS bookings (
+      id TEXT PRIMARY KEY,
+      slot_id TEXT NOT NULL,
+      name TEXT NOT NULL,
+      cpf TEXT,
+      phone TEXT,
+      email TEXT,
+      description TEXT,
+      created_at TEXT NOT NULL,
+      status TEXT DEFAULT 'confirmed',
+      FOREIGN KEY (slot_id) REFERENCES slots(id)
+    );
+    
+    -- Migra\xe7\xe3o: Adicionar coluna status se n\xe3o existir (para bancos existentes)
+    PRAGMA user_version;
+  `);try{i.prepare("PRAGMA table_info(bookings)").all().some(e=>"status"===e.name)||i.prepare("ALTER TABLE bookings ADD COLUMN status TEXT DEFAULT 'confirmed'").run()}catch(e){console.error("Erro ao verificar/migrar tabela bookings:",e)}i.exec(`
+    CREATE TABLE IF NOT EXISTS availability_configs (
+      id TEXT PRIMARY KEY,
+      start_date TEXT NOT NULL,
+
+    CREATE TABLE IF NOT EXISTS availability_configs (
+      id TEXT PRIMARY KEY,
+      start_date TEXT NOT NULL,
+      end_date TEXT NOT NULL,
+      start_time TEXT NOT NULL,
+      end_time TEXT NOT NULL,
+      slot_duration INTEGER NOT NULL,
+      days_of_week TEXT NOT NULL,
+      lunch_break_enabled INTEGER DEFAULT 0,
+      lunch_break_start TEXT,
+      lunch_break_duration INTEGER
+    );
+
+    CREATE TABLE IF NOT EXISTS counters (
+      name TEXT PRIMARY KEY,
+      value INTEGER DEFAULT 0
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_slots_date ON slots(date);
+    CREATE INDEX IF NOT EXISTS idx_bookings_slot_id ON bookings(slot_id);
+  `),i.prepare("SELECT value FROM counters WHERE name = 'booking'").get()||i.prepare("INSERT INTO counters (name, value) VALUES ('booking', 0)").run();try{i.exec("ALTER TABLE slots ADD COLUMN is_disabled INTEGER DEFAULT 0")}catch{}try{i.exec("ALTER TABLE availability_configs ADD COLUMN lunch_break_enabled INTEGER DEFAULT 0")}catch{}try{i.exec("ALTER TABLE availability_configs ADD COLUMN lunch_break_start TEXT")}catch{}try{i.exec("ALTER TABLE availability_configs ADD COLUMN lunch_break_duration INTEGER")}catch{}try{i.exec("ALTER TABLE bookings ADD COLUMN cpf TEXT")}catch{}try{i.prepare("PRAGMA table_info(slots)").all().some(e=>"is_internal"===e.name)||i.prepare("ALTER TABLE slots ADD COLUMN is_internal INTEGER DEFAULT 0").run()}catch(e){console.error("Erro ao verificar/migrar tabela slots (is_internal):",e)}return i}])},62876,e=>{"use strict";var t=e.i(54109),r=e.i(16167),a=e.i(80906),n=e.i(51743),i=e.i(89870),o=e.i(71397),s=e.i(6930),l=e.i(37533),d=e.i(4994),u=e.i(1822),c=e.i(65452),E=e.i(1482),p=e.i(13776),T=e.i(24703),R=e.i(14729),x=e.i(145),A=e.i(93695);e.i(31727);var N=e.i(92994),h=e.i(90010),f=e.i(23182);async function g(e,{params:t}){try{let e=(0,f.default)(),{id:r}=await t;return e.prepare("DELETE FROM availability_configs WHERE id = ?").run(r),h.NextResponse.json({success:!0})}catch(e){return console.error("Erro ao remover configuração:",e),h.NextResponse.json({error:"Erro ao remover configuração"},{status:500})}}e.s(["DELETE",()=>g],29107);var v=e.i(29107);let L=new t.AppRouteRouteModule({definition:{kind:r.RouteKind.APP_ROUTE,page:"/api/configs/[id]/route",pathname:"/api/configs/[id]",filename:"route",bundlePath:""},distDir:".next",relativeProjectDir:"",resolvedPagePath:"[project]/OneDrive/Desktop/Programming/agendamento-policial/app/api/configs/[id]/route.ts",nextConfigOutput:"",userland:v}),{workAsyncStorage:m,workUnitAsyncStorage:_,serverHooks:b}=L;function O(){return(0,a.patchFetch)({workAsyncStorage:m,workUnitAsyncStorage:_})}async function y(e,t,a){L.isDev&&(0,n.addRequestMeta)(e,"devRequestTimingInternalsEnd",process.hrtime.bigint());let h="/api/configs/[id]/route";h=h.replace(/\/index$/,"")||"/";let f=await L.prepare(e,t,{srcPage:h,multiZoneDraftMode:!1});if(!f)return t.statusCode=400,t.end("Bad Request"),null==a.waitUntil||a.waitUntil.call(a,Promise.resolve()),null;let{buildId:g,params:v,nextConfig:m,parsedUrl:_,isDraftMode:b,prerenderManifest:O,routerServerContext:y,isOnDemandRevalidate:C,revalidateOnlyGenerated:I,resolvedPathname:U,clientReferenceManifest:w,serverActionsManifest:D}=f,k=(0,l.normalizeAppPath)(h),S=!!(O.dynamicRoutes[k]||O.routes[U]),X=async()=>((null==y?void 0:y.render404)?await y.render404(e,t,_,!1):t.end("This page could not be found"),null);if(S&&!b){let e=!!O.routes[U],t=O.dynamicRoutes[k];if(t&&!1===t.fallback&&!e){if(m.experimental.adapterPath)return await X();throw new A.NoFallbackError}}let M=null;!S||L.isDev||b||(M="/index"===(M=U)?"/":M);let P=!0===L.isDev||!S,F=S&&!P;D&&w&&(0,o.setReferenceManifestsSingleton)({page:h,clientReferenceManifest:w,serverActionsManifest:D,serverModuleMap:(0,s.createServerModuleMap)({serverActionsManifest:D})});let q=e.method||"GET",j=(0,i.getTracer)(),H=j.getActiveScopeSpan(),B={params:v,prerenderManifest:O,renderOpts:{experimental:{authInterrupts:!!m.experimental.authInterrupts},cacheComponents:!!m.cacheComponents,supportsDynamicResponse:P,incrementalCache:(0,n.getRequestMeta)(e,"incrementalCache"),cacheLifeProfiles:m.cacheLife,waitUntil:a.waitUntil,onClose:e=>{t.on("close",e)},onAfterTaskError:void 0,onInstrumentationRequestError:(t,r,a)=>L.onRequestError(e,t,a,y)},sharedContext:{buildId:g}},G=new d.NodeNextRequest(e),K=new d.NodeNextResponse(t),Y=u.NextRequestAdapter.fromNodeNextRequest(G,(0,u.signalFromNodeResponse)(t));try{let o=async e=>L.handle(Y,B).finally(()=>{if(!e)return;e.setAttributes({"http.status_code":t.statusCode,"next.rsc":!1});let r=j.getRootSpanAttributes();if(!r)return;if(r.get("next.span_type")!==c.BaseServerSpan.handleRequest)return void console.warn(`Unexpected root span type '${r.get("next.span_type")}'. Please report this Next.js issue https://github.com/vercel/next.js`);let a=r.get("next.route");if(a){let t=`${q} ${a}`;e.setAttributes({"next.route":a,"http.route":a,"next.span_name":t}),e.updateName(t)}else e.updateName(`${q} ${h}`)}),s=!!(0,n.getRequestMeta)(e,"minimalMode"),l=async n=>{var i,l;let d=async({previousCacheEntry:r})=>{try{if(!s&&C&&I&&!r)return t.statusCode=404,t.setHeader("x-nextjs-cache","REVALIDATED"),t.end("This page could not be found"),null;let i=await o(n);e.fetchMetrics=B.renderOpts.fetchMetrics;let l=B.renderOpts.pendingWaitUntil;l&&a.waitUntil&&(a.waitUntil(l),l=void 0);let d=B.renderOpts.collectedTags;if(!S)return await (0,p.sendResponse)(G,K,i,B.renderOpts.pendingWaitUntil),null;{let e=await i.blob(),t=(0,T.toNodeOutgoingHttpHeaders)(i.headers);d&&(t[x.NEXT_CACHE_TAGS_HEADER]=d),!t["content-type"]&&e.type&&(t["content-type"]=e.type);let r=void 0!==B.renderOpts.collectedRevalidate&&!(B.renderOpts.collectedRevalidate>=x.INFINITE_CACHE)&&B.renderOpts.collectedRevalidate,a=void 0===B.renderOpts.collectedExpire||B.renderOpts.collectedExpire>=x.INFINITE_CACHE?void 0:B.renderOpts.collectedExpire;return{value:{kind:N.CachedRouteKind.APP_ROUTE,status:i.status,body:Buffer.from(await e.arrayBuffer()),headers:t},cacheControl:{revalidate:r,expire:a}}}}catch(t){throw(null==r?void 0:r.isStale)&&await L.onRequestError(e,t,{routerKind:"App Router",routePath:h,routeType:"route",revalidateReason:(0,E.getRevalidateReason)({isStaticGeneration:F,isOnDemandRevalidate:C})},y),t}},u=await L.handleResponse({req:e,nextConfig:m,cacheKey:M,routeKind:r.RouteKind.APP_ROUTE,isFallback:!1,prerenderManifest:O,isRoutePPREnabled:!1,isOnDemandRevalidate:C,revalidateOnlyGenerated:I,responseGenerator:d,waitUntil:a.waitUntil,isMinimalMode:s});if(!S)return null;if((null==u||null==(i=u.value)?void 0:i.kind)!==N.CachedRouteKind.APP_ROUTE)throw Object.defineProperty(Error(`Invariant: app-route received invalid cache entry ${null==u||null==(l=u.value)?void 0:l.kind}`),"__NEXT_ERROR_CODE",{value:"E701",enumerable:!1,configurable:!0});s||t.setHeader("x-nextjs-cache",C?"REVALIDATED":u.isMiss?"MISS":u.isStale?"STALE":"HIT"),b&&t.setHeader("Cache-Control","private, no-cache, no-store, max-age=0, must-revalidate");let c=(0,T.fromNodeOutgoingHttpHeaders)(u.value.headers);return s&&S||c.delete(x.NEXT_CACHE_TAGS_HEADER),!u.cacheControl||t.getHeader("Cache-Control")||c.get("Cache-Control")||c.set("Cache-Control",(0,R.getCacheControlHeader)(u.cacheControl)),await (0,p.sendResponse)(G,K,new Response(u.value.body,{headers:c,status:u.value.status||200})),null};H?await l(H):await j.withPropagatedContext(e.headers,()=>j.trace(c.BaseServerSpan.handleRequest,{spanName:`${q} ${h}`,kind:i.SpanKind.SERVER,attributes:{"http.method":q,"http.target":e.url}},l))}catch(t){if(t instanceof A.NoFallbackError||await L.onRequestError(e,t,{routerKind:"App Router",routePath:k,routeType:"route",revalidateReason:(0,E.getRevalidateReason)({isStaticGeneration:F,isOnDemandRevalidate:C})}),S)throw t;return await (0,p.sendResponse)(G,K,new Response(null,{status:500})),null}}e.s(["handler",()=>y,"patchFetch",()=>O,"routeModule",()=>L,"serverHooks",()=>b,"workAsyncStorage",()=>m,"workUnitAsyncStorage",()=>_],62876)}];
+
+//# sourceMappingURL=%5Broot-of-the-server%5D__35d120aa._.js.map

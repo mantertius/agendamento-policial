@@ -1,0 +1,3 @@
+{
+  "/api/bookings/reallocate/route": "app/api/bookings/reallocate/route.js"
+}

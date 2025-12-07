@@ -13,6 +13,25 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+export async function sendEmail({
+  to,
+  subject,
+  html,
+}: {
+  to: string;
+  subject: string;
+  html: string;
+}) {
+  const mailOptions = {
+    from: process.env.GMAIL_USER,
+    to,
+    subject,
+    html,
+  };
+
+  return transporter.sendMail(mailOptions);
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { to, subject, html } = await request.json();
@@ -27,10 +46,10 @@ export async function POST(request: NextRequest) {
     // Verificar se as credenciais estão configuradas
     if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
       console.warn('Credenciais do Gmail não configuradas. Email não enviado.');
-      return NextResponse.json({ 
-        success: true, 
+      return NextResponse.json({
+        success: true,
         message: 'Email não enviado (credenciais não configuradas)',
-        emailSent: false 
+        emailSent: false,
       });
     }
 

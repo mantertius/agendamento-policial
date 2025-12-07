@@ -80,7 +80,7 @@ function getInitialAuth() {
     return false;
 }
 function AdminPage() {
-    const { slots, bookings, availabilityConfigs, addAvailabilityConfig, removeAvailabilityConfig, generateSlotsFromConfig, cancelBooking, disableSlot, reactivateSlot, clearAllSlots } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$app$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useApp"])();
+    const { slots, bookings, availabilityConfigs, addAvailabilityConfig, removeAvailabilityConfig, generateSlotsFromConfig, cancelBooking, moveToPool, cancelDay, reallocateBooking, disableSlot, reactivateSlot, clearAllSlots } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$app$2f$context$2f$AppContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useApp"])();
     const [isAuthenticated, setIsAuthenticated] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(getInitialAuth);
     const [password, setPassword] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
     const [passwordError, setPasswordError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
@@ -89,6 +89,31 @@ function AdminPage() {
     const [filterView, setFilterView] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('all');
     const [calendarDate, setCalendarDate] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(new Date());
     const [searchQuery, setSearchQuery] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
+    const [reallocationBooking, setReallocationBooking] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null); // Booking sendo realocado
+    // Internal Booking State
+    const [internalDate, setInternalDate] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
+    const [internalStartTime, setInternalStartTime] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
+    const [internalEndTime, setInternalEndTime] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
+    const [internalName, setInternalName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
+    const [internalEmail, setInternalEmail] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
+    const [internalPhone, setInternalPhone] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
+    const [internalCpf, setInternalCpf] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
+    const [internalDescription, setInternalDescription] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
+    const [internalLoading, setInternalLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    const holidaysMap = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useMemo"])(()=>{
+        const year = calendarDate.getFullYear();
+        const holidays = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$app$2f$utils$2f$holidays$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getHolidaysForYear"])(year);
+        const map = {};
+        holidays.forEach((h)=>{
+            map[h.date] = {
+                name: h.name,
+                type: h.type
+            };
+        });
+        return map;
+    }, [
+        calendarDate
+    ]);
     // Form state
     const [startDate, setStartDate] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
     const [endDate, setEndDate] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
@@ -175,6 +200,48 @@ function AdminPage() {
     const formatDate = (dateStr)=>{
         return new Date(dateStr + 'T12:00:00').toLocaleDateString('pt-BR');
     };
+    const handleInternalBooking = async (e)=>{
+        e.preventDefault();
+        setInternalLoading(true);
+        try {
+            const response = await fetch('/api/bookings/internal', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    date: internalDate,
+                    startTime: internalStartTime,
+                    endTime: internalEndTime,
+                    name: internalName,
+                    email: internalEmail,
+                    phone: internalPhone,
+                    cpf: internalCpf,
+                    description: internalDescription
+                })
+            });
+            if (response.ok) {
+                alert('Agendamento interno criado com sucesso!');
+                setInternalDate('');
+                setInternalStartTime('');
+                setInternalEndTime('');
+                setInternalName('');
+                setInternalEmail('');
+                setInternalPhone('');
+                setInternalCpf('');
+                setInternalDescription('');
+                window.location.reload();
+            } else {
+                const data = await response.json();
+                alert(`Erro: ${data.error}`);
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Erro ao criar agendamento');
+        } finally{
+            setInternalLoading(false);
+        }
+    };
     // Tela de Login
     if (!isAuthenticated) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -199,17 +266,17 @@ function AdminPage() {
                                         d: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                                     }, void 0, false, {
                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                        lineNumber: 155,
+                                        lineNumber: 223,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 154,
+                                    lineNumber: 222,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                lineNumber: 153,
+                                lineNumber: 221,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -217,7 +284,7 @@ function AdminPage() {
                                 children: "Área Administrativa"
                             }, void 0, false, {
                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                lineNumber: 158,
+                                lineNumber: 226,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -225,13 +292,13 @@ function AdminPage() {
                                 children: "Digite a senha para acessar"
                             }, void 0, false, {
                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                lineNumber: 159,
+                                lineNumber: 227,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                        lineNumber: 152,
+                        lineNumber: 220,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -243,7 +310,7 @@ function AdminPage() {
                                 children: passwordError
                             }, void 0, false, {
                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                lineNumber: 164,
+                                lineNumber: 232,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -253,7 +320,7 @@ function AdminPage() {
                                         children: "Senha"
                                     }, void 0, false, {
                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                        lineNumber: 170,
+                                        lineNumber: 238,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -265,13 +332,13 @@ function AdminPage() {
                                         autoFocus: true
                                     }, void 0, false, {
                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                        lineNumber: 173,
+                                        lineNumber: 241,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                lineNumber: 169,
+                                lineNumber: 237,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -280,24 +347,24 @@ function AdminPage() {
                                 children: "Entrar"
                             }, void 0, false, {
                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                lineNumber: 183,
+                                lineNumber: 251,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                        lineNumber: 162,
+                        lineNumber: 230,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                lineNumber: 151,
+                lineNumber: 219,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-            lineNumber: 150,
+            lineNumber: 218,
             columnNumber: 7
         }, this);
     }
@@ -313,7 +380,7 @@ function AdminPage() {
                         children: "Painel Administrativo"
                     }, void 0, false, {
                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                        lineNumber: 199,
+                        lineNumber: 267,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -322,13 +389,13 @@ function AdminPage() {
                         children: "Sair"
                     }, void 0, false, {
                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                        lineNumber: 200,
+                        lineNumber: 268,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                lineNumber: 198,
+                lineNumber: 266,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -353,17 +420,17 @@ function AdminPage() {
                                             d: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 214,
+                                            lineNumber: 282,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                        lineNumber: 213,
+                                        lineNumber: 281,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 212,
+                                    lineNumber: 280,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -373,7 +440,7 @@ function AdminPage() {
                                             children: "Total Slots"
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 218,
+                                            lineNumber: 286,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -381,24 +448,24 @@ function AdminPage() {
                                             children: slots.length
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 219,
+                                            lineNumber: 287,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 217,
+                                    lineNumber: 285,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                            lineNumber: 211,
+                            lineNumber: 279,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                        lineNumber: 210,
+                        lineNumber: 278,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -420,17 +487,17 @@ function AdminPage() {
                                             d: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 228,
+                                            lineNumber: 296,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                        lineNumber: 227,
+                                        lineNumber: 295,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 226,
+                                    lineNumber: 294,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -440,7 +507,7 @@ function AdminPage() {
                                             children: "Disponíveis"
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 232,
+                                            lineNumber: 300,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -448,24 +515,24 @@ function AdminPage() {
                                             children: slots.filter((s)=>!s.isBooked && !s.isDisabled).length
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 233,
+                                            lineNumber: 301,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 231,
+                                    lineNumber: 299,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                            lineNumber: 225,
+                            lineNumber: 293,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                        lineNumber: 224,
+                        lineNumber: 292,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -487,17 +554,17 @@ function AdminPage() {
                                             d: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 242,
+                                            lineNumber: 310,
                                             columnNumber: 17
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                        lineNumber: 241,
+                                        lineNumber: 309,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 240,
+                                    lineNumber: 308,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -507,7 +574,7 @@ function AdminPage() {
                                             children: "Agendados"
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 246,
+                                            lineNumber: 314,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -515,30 +582,30 @@ function AdminPage() {
                                             children: bookings.length
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 247,
+                                            lineNumber: 315,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 245,
+                                    lineNumber: 313,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                            lineNumber: 239,
+                            lineNumber: 307,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                        lineNumber: 238,
+                        lineNumber: 306,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                lineNumber: 209,
+                lineNumber: 277,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -555,7 +622,7 @@ function AdminPage() {
                                     children: "Configurar"
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 257,
+                                    lineNumber: 325,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -564,7 +631,7 @@ function AdminPage() {
                                     children: "Visualizar Agenda"
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 267,
+                                    lineNumber: 335,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -577,7 +644,7 @@ function AdminPage() {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 277,
+                                    lineNumber: 345,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -586,7 +653,29 @@ function AdminPage() {
                                     children: "Feriados"
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 287,
+                                    lineNumber: 355,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                    onClick: ()=>setActiveTab('reallocation'),
+                                    className: `px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${activeTab === 'reallocation' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`,
+                                    children: [
+                                        "Realocação (",
+                                        bookings.filter((b)=>b.status === 'pending_reallocation').length,
+                                        ")"
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                    lineNumber: 365,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                    onClick: ()=>setActiveTab('internal'),
+                                    className: `px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${activeTab === 'internal' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`,
+                                    children: "Agendamento Interno"
+                                }, void 0, false, {
+                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                    lineNumber: 375,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -605,30 +694,30 @@ function AdminPage() {
                                                 d: "M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
                                             }, void 0, false, {
                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                lineNumber: 302,
+                                                lineNumber: 390,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 301,
+                                            lineNumber: 389,
                                             columnNumber: 15
                                         }, this),
                                         "Relatório Diário"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 297,
+                                    lineNumber: 385,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                            lineNumber: 256,
+                            lineNumber: 324,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                        lineNumber: 255,
+                        lineNumber: 323,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -650,7 +739,7 @@ function AdminPage() {
                                                             children: "Data Inicial"
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 316,
+                                                            lineNumber: 404,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -661,13 +750,13 @@ function AdminPage() {
                                                             required: true
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 319,
+                                                            lineNumber: 407,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 315,
+                                                    lineNumber: 403,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -677,7 +766,7 @@ function AdminPage() {
                                                             children: "Data Final"
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 328,
+                                                            lineNumber: 416,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -689,19 +778,19 @@ function AdminPage() {
                                                             required: true
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 331,
+                                                            lineNumber: 419,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 327,
+                                                    lineNumber: 415,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 314,
+                                            lineNumber: 402,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -714,7 +803,7 @@ function AdminPage() {
                                                             children: "Horário Inicial"
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 344,
+                                                            lineNumber: 432,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -725,13 +814,13 @@ function AdminPage() {
                                                             required: true
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 347,
+                                                            lineNumber: 435,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 343,
+                                                    lineNumber: 431,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -741,7 +830,7 @@ function AdminPage() {
                                                             children: "Horário Final"
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 356,
+                                                            lineNumber: 444,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -752,13 +841,13 @@ function AdminPage() {
                                                             required: true
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 359,
+                                                            lineNumber: 447,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 355,
+                                                    lineNumber: 443,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -768,7 +857,7 @@ function AdminPage() {
                                                             children: "Duração do Slot (min)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 368,
+                                                            lineNumber: 456,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -781,7 +870,7 @@ function AdminPage() {
                                                                     children: "15 minutos"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 376,
+                                                                    lineNumber: 464,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -789,7 +878,7 @@ function AdminPage() {
                                                                     children: "30 minutos"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 377,
+                                                                    lineNumber: 465,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -797,7 +886,7 @@ function AdminPage() {
                                                                     children: "45 minutos"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 378,
+                                                                    lineNumber: 466,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -805,7 +894,7 @@ function AdminPage() {
                                                                     children: "1 hora"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 379,
+                                                                    lineNumber: 467,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -813,7 +902,7 @@ function AdminPage() {
                                                                     children: "1h 30min"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 380,
+                                                                    lineNumber: 468,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -821,25 +910,25 @@ function AdminPage() {
                                                                     children: "2 horas"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 381,
+                                                                    lineNumber: 469,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 371,
+                                                            lineNumber: 459,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 367,
+                                                    lineNumber: 455,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 342,
+                                            lineNumber: 430,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -849,7 +938,7 @@ function AdminPage() {
                                                     children: "Dias da Semana"
                                                 }, void 0, false, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 387,
+                                                    lineNumber: 475,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -861,18 +950,18 @@ function AdminPage() {
                                                             children: day.label
                                                         }, day.value, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 392,
+                                                            lineNumber: 480,
                                                             columnNumber: 23
                                                         }, this))
                                                 }, void 0, false, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 390,
+                                                    lineNumber: 478,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 386,
+                                            lineNumber: 474,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -891,20 +980,20 @@ function AdminPage() {
                                                                     className: "sr-only peer"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 412,
+                                                                    lineNumber: 500,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                     className: "w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 418,
+                                                                    lineNumber: 506,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 411,
+                                                            lineNumber: 499,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -912,13 +1001,13 @@ function AdminPage() {
                                                             children: "Incluir Horário de Almoço"
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 420,
+                                                            lineNumber: 508,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 410,
+                                                    lineNumber: 498,
                                                     columnNumber: 19
                                                 }, this),
                                                 lunchBreakEnabled && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -931,7 +1020,7 @@ function AdminPage() {
                                                                     children: "Início do Almoço"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 428,
+                                                                    lineNumber: 516,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -941,13 +1030,13 @@ function AdminPage() {
                                                                     className: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 431,
+                                                                    lineNumber: 519,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 427,
+                                                            lineNumber: 515,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -957,7 +1046,7 @@ function AdminPage() {
                                                                     children: "Duração do Almoço"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 439,
+                                                                    lineNumber: 527,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -970,7 +1059,7 @@ function AdminPage() {
                                                                             children: "30 minutos"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                            lineNumber: 447,
+                                                                            lineNumber: 535,
                                                                             columnNumber: 27
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -978,7 +1067,7 @@ function AdminPage() {
                                                                             children: "45 minutos"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                            lineNumber: 448,
+                                                                            lineNumber: 536,
                                                                             columnNumber: 27
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -986,7 +1075,7 @@ function AdminPage() {
                                                                             children: "1 hora"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                            lineNumber: 449,
+                                                                            lineNumber: 537,
                                                                             columnNumber: 27
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -994,7 +1083,7 @@ function AdminPage() {
                                                                             children: "1h 30min"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                            lineNumber: 450,
+                                                                            lineNumber: 538,
                                                                             columnNumber: 27
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1002,19 +1091,19 @@ function AdminPage() {
                                                                             children: "2 horas"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                            lineNumber: 451,
+                                                                            lineNumber: 539,
                                                                             columnNumber: 27
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 442,
+                                                                    lineNumber: 530,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 438,
+                                                            lineNumber: 526,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1036,24 +1125,24 @@ function AdminPage() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                lineNumber: 455,
+                                                                lineNumber: 543,
                                                                 columnNumber: 25
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 454,
+                                                            lineNumber: 542,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 426,
+                                                    lineNumber: 514,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 409,
+                                            lineNumber: 497,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1078,24 +1167,24 @@ function AdminPage() {
                                                                         d: "M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                        lineNumber: 477,
+                                                                        lineNumber: 565,
                                                                         columnNumber: 27
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 476,
+                                                                    lineNumber: 564,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 "Meses de Férias (sem atendimento)"
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 475,
+                                                            lineNumber: 563,
                                                             columnNumber: 23
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                        lineNumber: 474,
+                                                        lineNumber: 562,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1103,7 +1192,7 @@ function AdminPage() {
                                                         children: "Selecione os meses em que não haverá atendimento. Nenhum slot será criado nesses meses."
                                                     }, void 0, false, {
                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                        lineNumber: 482,
+                                                        lineNumber: 570,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1115,12 +1204,12 @@ function AdminPage() {
                                                                 children: month.substring(0, 3)
                                                             }, index, false, {
                                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                lineNumber: 487,
+                                                                lineNumber: 575,
                                                                 columnNumber: 25
                                                             }, this))
                                                     }, void 0, false, {
                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                        lineNumber: 485,
+                                                        lineNumber: 573,
                                                         columnNumber: 21
                                                     }, this),
                                                     vacationMonths.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1133,23 +1222,23 @@ function AdminPage() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 503,
+                                                            lineNumber: 591,
                                                             columnNumber: 25
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                        lineNumber: 502,
+                                                        lineNumber: 590,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                lineNumber: 473,
+                                                lineNumber: 561,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 472,
+                                            lineNumber: 560,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1161,7 +1250,7 @@ function AdminPage() {
                                                     children: "Criar Disponibilidade"
                                                 }, void 0, false, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 512,
+                                                    lineNumber: 600,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1175,19 +1264,19 @@ function AdminPage() {
                                                     children: "Limpar Todos os Slots"
                                                 }, void 0, false, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 518,
+                                                    lineNumber: 606,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 511,
+                                            lineNumber: 599,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 313,
+                                    lineNumber: 401,
                                     columnNumber: 15
                                 }, this),
                                 availabilityConfigs.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1197,7 +1286,7 @@ function AdminPage() {
                                             children: "Configurações Ativas"
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 535,
+                                            lineNumber: 623,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1216,7 +1305,7 @@ function AdminPage() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 540,
+                                                                    lineNumber: 628,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1231,7 +1320,7 @@ function AdminPage() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 543,
+                                                                    lineNumber: 631,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1239,7 +1328,7 @@ function AdminPage() {
                                                                     children: config.daysOfWeek.map((d)=>DAYS_OF_WEEK.find((day)=>day.value === d)?.label).join(', ')
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 546,
+                                                                    lineNumber: 634,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 config.lunchBreakEnabled && config.lunchBreakStart && config.lunchBreakDuration && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1253,7 +1342,7 @@ function AdminPage() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 550,
+                                                                    lineNumber: 638,
                                                                     columnNumber: 29
                                                                 }, this),
                                                                 config.vacationMonths && config.vacationMonths.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1264,13 +1353,13 @@ function AdminPage() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 555,
+                                                                    lineNumber: 643,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 539,
+                                                            lineNumber: 627,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1288,40 +1377,40 @@ function AdminPage() {
                                                                     d: "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 565,
+                                                                    lineNumber: 653,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                lineNumber: 564,
+                                                                lineNumber: 652,
                                                                 columnNumber: 27
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 560,
+                                                            lineNumber: 648,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, config.id, true, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 538,
+                                                    lineNumber: 626,
                                                     columnNumber: 23
                                                 }, this))
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 536,
+                                            lineNumber: 624,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 534,
+                                    lineNumber: 622,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                            lineNumber: 311,
+                            lineNumber: 399,
                             columnNumber: 13
                         }, this) : activeTab === 'calendar' ? /* Visualização de Calendário da Agenda */ /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "space-y-4 sm:space-y-6",
@@ -1337,7 +1426,7 @@ function AdminPage() {
                                                     children: "Filtrar:"
                                                 }, void 0, false, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 580,
+                                                    lineNumber: 668,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1349,7 +1438,7 @@ function AdminPage() {
                                                             children: "Todos"
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 582,
+                                                            lineNumber: 670,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1358,7 +1447,7 @@ function AdminPage() {
                                                             children: "Agendados"
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 590,
+                                                            lineNumber: 678,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1367,7 +1456,7 @@ function AdminPage() {
                                                             children: "Livres"
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 598,
+                                                            lineNumber: 686,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1376,19 +1465,19 @@ function AdminPage() {
                                                             children: "Off"
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 606,
+                                                            lineNumber: 694,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 581,
+                                                    lineNumber: 669,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 579,
+                                            lineNumber: 667,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1409,17 +1498,17 @@ function AdminPage() {
                                                             d: "M15 19l-7-7 7-7"
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 624,
+                                                            lineNumber: 712,
                                                             columnNumber: 23
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                        lineNumber: 623,
+                                                        lineNumber: 711,
                                                         columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 619,
+                                                    lineNumber: 707,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1431,7 +1520,7 @@ function AdminPage() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 627,
+                                                    lineNumber: 715,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1449,29 +1538,29 @@ function AdminPage() {
                                                             d: "M9 5l7 7-7 7"
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 635,
+                                                            lineNumber: 723,
                                                             columnNumber: 23
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                        lineNumber: 634,
+                                                        lineNumber: 722,
                                                         columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 630,
+                                                    lineNumber: 718,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 618,
+                                            lineNumber: 706,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 578,
+                                    lineNumber: 666,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1482,7 +1571,7 @@ function AdminPage() {
                                                 children: day
                                             }, day, false, {
                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                lineNumber: 644,
+                                                lineNumber: 732,
                                                 columnNumber: 19
                                             }, this)),
                                         (()=>{
@@ -1498,7 +1587,7 @@ function AdminPage() {
                                                     className: "h-8 sm:h-10"
                                                 }, `empty-${i}`, false, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 659,
+                                                    lineNumber: 747,
                                                     columnNumber: 32
                                                 }, this));
                                             }
@@ -1510,23 +1599,36 @@ function AdminPage() {
                                                 const hasSlots = daySlots.length > 0;
                                                 const isSelected = selectedDateView === dateStr;
                                                 const isToday = dateStr === today;
+                                                // Verificar se é feriado
+                                                const holidayInfo = holidaysMap[dateStr];
+                                                const isHolidayDate = !!holidayInfo;
+                                                const holidayName = holidayInfo?.name;
                                                 cells.push(/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                     onClick: ()=>setSelectedDateView(isSelected ? null : dateStr),
-                                                    className: `h-8 sm:h-10 rounded-lg text-xs sm:text-sm font-medium transition-all relative ${isSelected ? 'ring-2 ring-blue-500 ring-offset-1' : ''} ${hasSlots ? bookedCount > 0 ? 'bg-purple-100 text-purple-700 hover:bg-purple-200' : 'bg-green-100 text-green-700 hover:bg-green-200' : 'text-gray-400 hover:bg-gray-50'} ${isToday ? 'font-bold' : ''}`,
+                                                    title: isHolidayDate ? `🎉 ${holidayName}` : undefined,
+                                                    className: `h-8 sm:h-10 rounded-lg text-xs sm:text-sm font-medium transition-all relative ${isSelected ? 'ring-2 ring-blue-500 ring-offset-1' : ''} ${isHolidayDate ? 'bg-purple-200 text-purple-800 hover:bg-purple-300 border border-purple-400' : hasSlots ? bookedCount > 0 ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' : 'bg-green-100 text-green-700 hover:bg-green-200' : 'text-gray-400 hover:bg-gray-50'} ${isToday ? 'font-bold' : ''}`,
                                                     children: [
                                                         day,
-                                                        bookedCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                        isHolidayDate && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                            className: "absolute -top-1 -right-1 text-[10px]",
+                                                            children: "🎉"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                            lineNumber: 783,
+                                                            columnNumber: 27
+                                                        }, this),
+                                                        bookedCount > 0 && !isHolidayDate && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             className: "absolute -top-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-purple-600 text-white text-[10px] sm:text-xs rounded-full flex items-center justify-center",
                                                             children: bookedCount
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 687,
+                                                            lineNumber: 786,
                                                             columnNumber: 27
                                                         }, this)
                                                     ]
                                                 }, day, true, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 672,
+                                                    lineNumber: 765,
                                                     columnNumber: 23
                                                 }, this));
                                             }
@@ -1535,18 +1637,40 @@ function AdminPage() {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 642,
+                                    lineNumber: 730,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "border-t border-gray-200 pt-4 sm:pt-6",
                                     children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                                            className: "text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4",
-                                            children: selectedDateView ? `Horários de ${formatDate(selectedDateView)}` : filterView === 'booked' ? 'Todos os Agendamentos' : filterView === 'available' ? 'Horários Disponíveis' : filterView === 'disabled' ? 'Horários Desativados' : 'Todos os Horários'
-                                        }, void 0, false, {
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "flex justify-between items-center mb-3 sm:mb-4",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                                    className: "text-base sm:text-lg font-semibold text-gray-800",
+                                                    children: selectedDateView ? `Horários de ${formatDate(selectedDateView)}` : filterView === 'booked' ? 'Todos os Agendamentos' : filterView === 'available' ? 'Horários Disponíveis' : filterView === 'disabled' ? 'Horários Desativados' : 'Todos os Horários'
+                                                }, void 0, false, {
+                                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                    lineNumber: 801,
+                                                    columnNumber: 19
+                                                }, this),
+                                                selectedDateView && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                    onClick: ()=>{
+                                                        if (confirm(`ATENÇÃO: Isso cancelará TODOS os agendamentos do dia ${formatDate(selectedDateView)} e enviará emails de aviso para realocação. Deseja continuar?`)) {
+                                                            cancelDay(selectedDateView);
+                                                        }
+                                                    },
+                                                    className: "px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-xs sm:text-sm font-medium",
+                                                    children: "Cancelar Dia Inteiro"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                    lineNumber: 813,
+                                                    columnNumber: 21
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 701,
+                                            lineNumber: 800,
                                             columnNumber: 17
                                         }, this),
                                         (()=>{
@@ -1578,25 +1702,25 @@ function AdminPage() {
                                                                 d: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                lineNumber: 735,
+                                                                lineNumber: 848,
                                                                 columnNumber: 27
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 734,
+                                                            lineNumber: 847,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                             children: "Nenhum horário encontrado"
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 737,
+                                                            lineNumber: 850,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 733,
+                                                    lineNumber: 846,
                                                     columnNumber: 23
                                                 }, this);
                                             }
@@ -1628,12 +1752,12 @@ function AdminPage() {
                                                                             d: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                            lineNumber: 757,
+                                                                            lineNumber: 870,
                                                                             columnNumber: 31
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                        lineNumber: 756,
+                                                                        lineNumber: 869,
                                                                         columnNumber: 29
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1646,7 +1770,7 @@ function AdminPage() {
                                                                         })
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                        lineNumber: 759,
+                                                                        lineNumber: 872,
                                                                         columnNumber: 29
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1657,7 +1781,7 @@ function AdminPage() {
                                                                         })
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                        lineNumber: 767,
+                                                                        lineNumber: 880,
                                                                         columnNumber: 29
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1671,13 +1795,13 @@ function AdminPage() {
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                        lineNumber: 773,
+                                                                        lineNumber: 886,
                                                                         columnNumber: 29
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                lineNumber: 755,
+                                                                lineNumber: 868,
                                                                 columnNumber: 27
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1701,14 +1825,14 @@ function AdminPage() {
                                                                                                     children: "-"
                                                                                                 }, void 0, false, {
                                                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                    lineNumber: 803,
+                                                                                                    lineNumber: 916,
                                                                                                     columnNumber: 41
                                                                                                 }, this),
                                                                                                 slot.endTime
                                                                                             ]
                                                                                         }, void 0, true, {
                                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                            lineNumber: 795,
+                                                                                            lineNumber: 908,
                                                                                             columnNumber: 39
                                                                                         }, this),
                                                                                         slot.isDisabled ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1718,12 +1842,12 @@ function AdminPage() {
                                                                                                 children: "Desativado"
                                                                                             }, void 0, false, {
                                                                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                lineNumber: 809,
+                                                                                                lineNumber: 922,
                                                                                                 columnNumber: 43
                                                                                             }, this)
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                            lineNumber: 808,
+                                                                                            lineNumber: 921,
                                                                                             columnNumber: 41
                                                                                         }, this) : slot.isBooked && booking ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                                             className: "flex-1 min-w-0",
@@ -1736,7 +1860,7 @@ function AdminPage() {
                                                                                                             children: booking.name
                                                                                                         }, void 0, false, {
                                                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                            lineNumber: 816,
+                                                                                                            lineNumber: 929,
                                                                                                             columnNumber: 45
                                                                                                         }, this),
                                                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1744,13 +1868,13 @@ function AdminPage() {
                                                                                                             children: "Agendado"
                                                                                                         }, void 0, false, {
                                                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                            lineNumber: 817,
+                                                                                                            lineNumber: 930,
                                                                                                             columnNumber: 45
                                                                                                         }, this)
                                                                                                     ]
                                                                                                 }, void 0, true, {
                                                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                    lineNumber: 815,
+                                                                                                    lineNumber: 928,
                                                                                                     columnNumber: 43
                                                                                                 }, this),
                                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1763,7 +1887,7 @@ function AdminPage() {
                                                                                                                     children: "📱"
                                                                                                                 }, void 0, false, {
                                                                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                                    lineNumber: 824,
+                                                                                                                    lineNumber: 937,
                                                                                                                     columnNumber: 49
                                                                                                                 }, this),
                                                                                                                 " ",
@@ -1771,7 +1895,7 @@ function AdminPage() {
                                                                                                             ]
                                                                                                         }, void 0, true, {
                                                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                            lineNumber: 823,
+                                                                                                            lineNumber: 936,
                                                                                                             columnNumber: 47
                                                                                                         }, this),
                                                                                                         booking.email && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1781,7 +1905,7 @@ function AdminPage() {
                                                                                                                     children: "✉️"
                                                                                                                 }, void 0, false, {
                                                                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                                    lineNumber: 829,
+                                                                                                                    lineNumber: 942,
                                                                                                                     columnNumber: 49
                                                                                                                 }, this),
                                                                                                                 " ",
@@ -1789,7 +1913,7 @@ function AdminPage() {
                                                                                                             ]
                                                                                                         }, void 0, true, {
                                                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                            lineNumber: 828,
+                                                                                                            lineNumber: 941,
                                                                                                             columnNumber: 47
                                                                                                         }, this),
                                                                                                         booking.description && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1801,19 +1925,19 @@ function AdminPage() {
                                                                                                             ]
                                                                                                         }, void 0, true, {
                                                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                            lineNumber: 833,
+                                                                                                            lineNumber: 946,
                                                                                                             columnNumber: 47
                                                                                                         }, this)
                                                                                                     ]
                                                                                                 }, void 0, true, {
                                                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                    lineNumber: 821,
+                                                                                                    lineNumber: 934,
                                                                                                     columnNumber: 43
                                                                                                 }, this)
                                                                                             ]
                                                                                         }, void 0, true, {
                                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                            lineNumber: 814,
+                                                                                            lineNumber: 927,
                                                                                             columnNumber: 41
                                                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                                             className: "flex items-center",
@@ -1822,18 +1946,18 @@ function AdminPage() {
                                                                                                 children: "Disponível"
                                                                                             }, void 0, false, {
                                                                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                lineNumber: 841,
+                                                                                                lineNumber: 954,
                                                                                                 columnNumber: 43
                                                                                             }, this)
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                            lineNumber: 840,
+                                                                                            lineNumber: 953,
                                                                                             columnNumber: 41
                                                                                         }, this)
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                    lineNumber: 794,
+                                                                                    lineNumber: 907,
                                                                                     columnNumber: 37
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1855,12 +1979,12 @@ function AdminPage() {
                                                                                                         d: "M6 18L18 6M6 6l12 12"
                                                                                                     }, void 0, false, {
                                                                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                        lineNumber: 855,
+                                                                                                        lineNumber: 968,
                                                                                                         columnNumber: 45
                                                                                                     }, this)
                                                                                                 }, void 0, false, {
                                                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                    lineNumber: 854,
+                                                                                                    lineNumber: 967,
                                                                                                     columnNumber: 43
                                                                                                 }, this),
                                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1868,13 +1992,13 @@ function AdminPage() {
                                                                                                     children: "Desmarcar"
                                                                                                 }, void 0, false, {
                                                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                    lineNumber: 857,
+                                                                                                    lineNumber: 970,
                                                                                                     columnNumber: 43
                                                                                                 }, this)
                                                                                             ]
                                                                                         }, void 0, true, {
                                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                            lineNumber: 850,
+                                                                                            lineNumber: 963,
                                                                                             columnNumber: 41
                                                                                         }, this),
                                                                                         slot.isDisabled ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1894,12 +2018,12 @@ function AdminPage() {
                                                                                                         d: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                                                                                                     }, void 0, false, {
                                                                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                        lineNumber: 869,
+                                                                                                        lineNumber: 982,
                                                                                                         columnNumber: 45
                                                                                                     }, this)
                                                                                                 }, void 0, false, {
                                                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                    lineNumber: 868,
+                                                                                                    lineNumber: 981,
                                                                                                     columnNumber: 43
                                                                                                 }, this),
                                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1907,13 +2031,13 @@ function AdminPage() {
                                                                                                     children: "Reativar"
                                                                                                 }, void 0, false, {
                                                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                    lineNumber: 871,
+                                                                                                    lineNumber: 984,
                                                                                                     columnNumber: 43
                                                                                                 }, this)
                                                                                             ]
                                                                                         }, void 0, true, {
                                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                            lineNumber: 863,
+                                                                                            lineNumber: 976,
                                                                                             columnNumber: 41
                                                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                                                             onClick: ()=>disableSlot(slot.id),
@@ -1932,12 +2056,12 @@ function AdminPage() {
                                                                                                         d: "M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
                                                                                                     }, void 0, false, {
                                                                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                        lineNumber: 880,
+                                                                                                        lineNumber: 993,
                                                                                                         columnNumber: 45
                                                                                                     }, this)
                                                                                                 }, void 0, false, {
                                                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                    lineNumber: 879,
+                                                                                                    lineNumber: 992,
                                                                                                     columnNumber: 43
                                                                                                 }, this),
                                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1945,60 +2069,60 @@ function AdminPage() {
                                                                                                     children: "Desativar"
                                                                                                 }, void 0, false, {
                                                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                                    lineNumber: 882,
+                                                                                                    lineNumber: 995,
                                                                                                     columnNumber: 43
                                                                                                 }, this)
                                                                                             ]
                                                                                         }, void 0, true, {
                                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                            lineNumber: 874,
+                                                                                            lineNumber: 987,
                                                                                             columnNumber: 41
                                                                                         }, this)
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                                    lineNumber: 848,
+                                                                                    lineNumber: 961,
                                                                                     columnNumber: 37
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                            lineNumber: 793,
+                                                                            lineNumber: 906,
                                                                             columnNumber: 35
                                                                         }, this)
                                                                     }, slot.id, false, {
                                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                        lineNumber: 783,
+                                                                        lineNumber: 896,
                                                                         columnNumber: 33
                                                                     }, this);
                                                                 })
                                                             }, void 0, false, {
                                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                lineNumber: 778,
+                                                                lineNumber: 891,
                                                                 columnNumber: 27
                                                             }, this)
                                                         ]
                                                     }, date, true, {
                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                        lineNumber: 754,
+                                                        lineNumber: 867,
                                                         columnNumber: 25
                                                     }, this))
                                             }, void 0, false, {
                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                lineNumber: 752,
+                                                lineNumber: 865,
                                                 columnNumber: 21
                                             }, this);
                                         })()
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 700,
+                                    lineNumber: 799,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                            lineNumber: 576,
+                            lineNumber: 664,
                             columnNumber: 13
                         }, this) : activeTab === 'bookings' ? /* Lista de agendamentos */ /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             children: [
@@ -2015,7 +2139,7 @@ function AdminPage() {
                                                 className: "w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
                                             }, void 0, false, {
                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                lineNumber: 904,
+                                                lineNumber: 1017,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
@@ -2030,12 +2154,12 @@ function AdminPage() {
                                                     d: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                                                 }, void 0, false, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 912,
+                                                    lineNumber: 1025,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                lineNumber: 911,
+                                                lineNumber: 1024,
                                                 columnNumber: 19
                                             }, this),
                                             searchQuery && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2053,28 +2177,28 @@ function AdminPage() {
                                                         d: "M6 18L18 6M6 6l12 12"
                                                     }, void 0, false, {
                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                        lineNumber: 920,
+                                                        lineNumber: 1033,
                                                         columnNumber: 25
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 919,
+                                                    lineNumber: 1032,
                                                     columnNumber: 23
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                lineNumber: 915,
+                                                lineNumber: 1028,
                                                 columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                        lineNumber: 903,
+                                        lineNumber: 1016,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 902,
+                                    lineNumber: 1015,
                                     columnNumber: 15
                                 }, this),
                                 bookings.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2092,12 +2216,12 @@ function AdminPage() {
                                                 d: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                                             }, void 0, false, {
                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                lineNumber: 930,
+                                                lineNumber: 1043,
                                                 columnNumber: 21
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 929,
+                                            lineNumber: 1042,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2105,13 +2229,13 @@ function AdminPage() {
                                             children: "Nenhum agendamento ainda"
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 932,
+                                            lineNumber: 1045,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 928,
+                                    lineNumber: 1041,
                                     columnNumber: 17
                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "space-y-3 sm:space-y-4",
@@ -2139,12 +2263,12 @@ function AdminPage() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 960,
+                                                    lineNumber: 1073,
                                                     columnNumber: 27
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                lineNumber: 959,
+                                                lineNumber: 1072,
                                                 columnNumber: 25
                                             }, this);
                                         }
@@ -2166,7 +2290,7 @@ function AdminPage() {
                                                                             children: booking.id
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                            lineNumber: 972,
+                                                                            lineNumber: 1085,
                                                                             columnNumber: 33
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2174,7 +2298,7 @@ function AdminPage() {
                                                                             children: booking.name
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                            lineNumber: 975,
+                                                                            lineNumber: 1088,
                                                                             columnNumber: 33
                                                                         }, this),
                                                                         slot && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2186,13 +2310,13 @@ function AdminPage() {
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                            lineNumber: 977,
+                                                                            lineNumber: 1090,
                                                                             columnNumber: 35
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 971,
+                                                                    lineNumber: 1084,
                                                                     columnNumber: 31
                                                                 }, this),
                                                                 booking.phone && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2203,7 +2327,7 @@ function AdminPage() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 983,
+                                                                    lineNumber: 1096,
                                                                     columnNumber: 33
                                                                 }, this),
                                                                 booking.email && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2214,7 +2338,7 @@ function AdminPage() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 986,
+                                                                    lineNumber: 1099,
                                                                     columnNumber: 33
                                                                 }, this),
                                                                 booking.description && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2226,50 +2350,84 @@ function AdminPage() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 989,
+                                                                    lineNumber: 1102,
                                                                     columnNumber: 33
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 970,
+                                                            lineNumber: 1083,
                                                             columnNumber: 29
                                                         }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                                            onClick: ()=>{
-                                                                if (confirm('Tem certeza que deseja cancelar este agendamento?')) {
-                                                                    cancelBooking(booking.id);
-                                                                }
-                                                            },
-                                                            className: "px-3 py-1.5 sm:py-1 text-red-600 hover:bg-red-50 rounded-lg transition-colors text-xs sm:text-sm self-end sm:self-start shrink-0",
-                                                            children: "Cancelar"
-                                                        }, void 0, false, {
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                            className: "flex flex-col sm:flex-row gap-2 self-end sm:self-start shrink-0",
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                    onClick: ()=>{
+                                                                        setReallocationBooking(booking);
+                                                                        setActiveTab('reallocation');
+                                                                    },
+                                                                    className: "px-3 py-1.5 sm:py-1 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors text-xs sm:text-sm",
+                                                                    children: "Realocar"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                    lineNumber: 1106,
+                                                                    columnNumber: 31
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                    onClick: ()=>{
+                                                                        if (confirm('Tem certeza que deseja mover este agendamento para o pool de realocação?')) {
+                                                                            moveToPool(booking.id);
+                                                                        }
+                                                                    },
+                                                                    className: "px-3 py-1.5 sm:py-1 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors text-xs sm:text-sm",
+                                                                    children: "Mover p/ Pool"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                    lineNumber: 1115,
+                                                                    columnNumber: 31
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                    onClick: ()=>{
+                                                                        if (confirm('Tem certeza que deseja cancelar este agendamento?')) {
+                                                                            cancelBooking(booking.id);
+                                                                        }
+                                                                    },
+                                                                    className: "px-3 py-1.5 sm:py-1 text-red-600 hover:bg-red-50 rounded-lg transition-colors text-xs sm:text-sm",
+                                                                    children: "Cancelar"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                    lineNumber: 1125,
+                                                                    columnNumber: 31
+                                                                }, this)
+                                                            ]
+                                                        }, void 0, true, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 992,
+                                                            lineNumber: 1105,
                                                             columnNumber: 29
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 969,
+                                                    lineNumber: 1082,
                                                     columnNumber: 27
                                                 }, this)
                                             }, booking.id, false, {
                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                lineNumber: 968,
+                                                lineNumber: 1081,
                                                 columnNumber: 25
                                             }, this);
                                         });
                                     })()
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 935,
+                                    lineNumber: 1048,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                            lineNumber: 900,
+                            lineNumber: 1013,
                             columnNumber: 13
                         }, this) : activeTab === 'holidays' ? /* Visualização de Feriados */ /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "space-y-6",
@@ -2291,12 +2449,12 @@ function AdminPage() {
                                                     d: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                                                 }, void 0, false, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 1016,
+                                                    lineNumber: 1150,
                                                     columnNumber: 21
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                lineNumber: 1015,
+                                                lineNumber: 1149,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2306,7 +2464,7 @@ function AdminPage() {
                                                         children: "Feriados Automáticos"
                                                     }, void 0, false, {
                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                        lineNumber: 1019,
+                                                        lineNumber: 1153,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2314,24 +2472,24 @@ function AdminPage() {
                                                         children: "O sistema automaticamente não cria slots nos dias de feriados nacionais, estaduais de Alagoas e municipais de Maceió. Feriados móveis como Carnaval, Páscoa e Corpus Christi são calculados automaticamente para cada ano."
                                                     }, void 0, false, {
                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                        lineNumber: 1020,
+                                                        lineNumber: 1154,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                lineNumber: 1018,
+                                                lineNumber: 1152,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                        lineNumber: 1014,
+                                        lineNumber: 1148,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 1013,
+                                    lineNumber: 1147,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2344,14 +2502,14 @@ function AdminPage() {
                                                     children: "📅"
                                                 }, void 0, false, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 1031,
+                                                    lineNumber: 1165,
                                                     columnNumber: 19
                                                 }, this),
                                                 "Feriados Fixos"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 1030,
+                                            lineNumber: 1164,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2367,7 +2525,7 @@ function AdminPage() {
                                                                     children: holiday.name
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 1049,
+                                                                    lineNumber: 1183,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2375,13 +2533,13 @@ function AdminPage() {
                                                                     children: holiday.type
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 1050,
+                                                                    lineNumber: 1184,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 1048,
+                                                            lineNumber: 1182,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2393,24 +2551,24 @@ function AdminPage() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 1060,
+                                                            lineNumber: 1194,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, index, true, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 1038,
+                                                    lineNumber: 1172,
                                                     columnNumber: 21
                                                 }, this))
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 1036,
+                                            lineNumber: 1170,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 1029,
+                                    lineNumber: 1163,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2423,7 +2581,7 @@ function AdminPage() {
                                                     children: "🗓️"
                                                 }, void 0, false, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 1071,
+                                                    lineNumber: 1205,
                                                     columnNumber: 19
                                                 }, this),
                                                 "Todos os Feriados de ",
@@ -2431,7 +2589,7 @@ function AdminPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 1070,
+                                            lineNumber: 1204,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2448,7 +2606,7 @@ function AdminPage() {
                                                                     children: "Data"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 1080,
+                                                                    lineNumber: 1214,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2456,7 +2614,7 @@ function AdminPage() {
                                                                     children: "Feriado"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 1081,
+                                                                    lineNumber: 1215,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2464,18 +2622,18 @@ function AdminPage() {
                                                                     children: "Tipo"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                    lineNumber: 1082,
+                                                                    lineNumber: 1216,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 1079,
+                                                            lineNumber: 1213,
                                                             columnNumber: 23
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                        lineNumber: 1078,
+                                                        lineNumber: 1212,
                                                         columnNumber: 21
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -2491,7 +2649,7 @@ function AdminPage() {
                                                                         })
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                        lineNumber: 1088,
+                                                                        lineNumber: 1222,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -2499,7 +2657,7 @@ function AdminPage() {
                                                                         children: holiday.name
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                        lineNumber: 1095,
+                                                                        lineNumber: 1229,
                                                                         columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -2509,40 +2667,40 @@ function AdminPage() {
                                                                             children: holiday.type
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                            lineNumber: 1097,
+                                                                            lineNumber: 1231,
                                                                             columnNumber: 29
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                        lineNumber: 1096,
+                                                                        lineNumber: 1230,
                                                                         columnNumber: 27
                                                                     }, this)
                                                                 ]
                                                             }, index, true, {
                                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                                lineNumber: 1087,
+                                                                lineNumber: 1221,
                                                                 columnNumber: 25
                                                             }, this))
                                                     }, void 0, false, {
                                                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                        lineNumber: 1085,
+                                                        lineNumber: 1219,
                                                         columnNumber: 21
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                lineNumber: 1077,
+                                                lineNumber: 1211,
                                                 columnNumber: 19
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 1076,
+                                            lineNumber: 1210,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 1069,
+                                    lineNumber: 1203,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2555,7 +2713,7 @@ function AdminPage() {
                                                     children: "📆"
                                                 }, void 0, false, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 1117,
+                                                    lineNumber: 1251,
                                                     columnNumber: 19
                                                 }, this),
                                                 "Feriados Móveis de ",
@@ -2563,7 +2721,7 @@ function AdminPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 1116,
+                                            lineNumber: 1250,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2582,7 +2740,7 @@ function AdminPage() {
                                                             children: holiday.name
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 1127,
+                                                            lineNumber: 1261,
                                                             columnNumber: 25
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2595,47 +2753,643 @@ function AdminPage() {
                                                             })
                                                         }, void 0, false, {
                                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                            lineNumber: 1128,
+                                                            lineNumber: 1262,
                                                             columnNumber: 25
                                                         }, this)
                                                     ]
                                                 }, index, true, {
                                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                                    lineNumber: 1126,
+                                                    lineNumber: 1260,
                                                     columnNumber: 23
                                                 }, this))
                                         }, void 0, false, {
                                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                            lineNumber: 1122,
+                                            lineNumber: 1256,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                                    lineNumber: 1115,
+                                    lineNumber: 1249,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                            lineNumber: 1012,
+                            lineNumber: 1146,
+                            columnNumber: 13
+                        }, this) : activeTab === 'reallocation' ? /* Visualização de Realocação */ /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "space-y-6",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "bg-blue-50 border border-blue-200 rounded-lg p-4",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "flex items-start gap-3",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                                                className: "w-6 h-6 text-blue-600 shrink-0 mt-0.5",
+                                                fill: "none",
+                                                stroke: "currentColor",
+                                                viewBox: "0 0 24 24",
+                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                                    strokeLinecap: "round",
+                                                    strokeLinejoin: "round",
+                                                    strokeWidth: 2,
+                                                    d: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                    lineNumber: 1281,
+                                                    columnNumber: 21
+                                                }, this)
+                                            }, void 0, false, {
+                                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                lineNumber: 1280,
+                                                columnNumber: 19
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
+                                                        className: "font-medium text-blue-800",
+                                                        children: "Pool de Realocação"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                        lineNumber: 1284,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                        className: "text-sm text-blue-700 mt-1",
+                                                        children: "Aqui estão listados os agendamentos que foram cancelados administrativamente (ex: cancelamento do dia) e precisam ser realocados. Ao realocar, o usuário receberá um email com o novo horário."
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                        lineNumber: 1285,
+                                                        columnNumber: 21
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                lineNumber: 1283,
+                                                columnNumber: 19
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                        lineNumber: 1279,
+                                        columnNumber: 17
+                                    }, this)
+                                }, void 0, false, {
+                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                    lineNumber: 1278,
+                                    columnNumber: 15
+                                }, this),
+                                reallocationBooking ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "bg-white border border-gray-200 rounded-xl p-6 shadow-sm",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "flex justify-between items-center mb-6",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                                    className: "text-lg font-bold text-gray-800",
+                                                    children: [
+                                                        "Realocando: ",
+                                                        reallocationBooking.name
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                    lineNumber: 1296,
+                                                    columnNumber: 21
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                    onClick: ()=>setReallocationBooking(null),
+                                                    className: "text-gray-500 hover:text-gray-700",
+                                                    children: "Cancelar"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                    lineNumber: 1299,
+                                                    columnNumber: 21
+                                                }, this)
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                            lineNumber: 1295,
+                                            columnNumber: 19
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                            className: "text-sm text-gray-600 mb-4",
+                                            children: "Selecione um novo horário disponível:"
+                                        }, void 0, false, {
+                                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                            lineNumber: 1307,
+                                            columnNumber: 19
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-[400px] overflow-y-auto",
+                                            children: slots.filter((s)=>!s.isBooked && !s.isDisabled && s.date >= new Date().toISOString().split('T')[0]).sort((a, b)=>`${a.date}${a.startTime}`.localeCompare(`${b.date}${b.startTime}`)).slice(0, 50) // Mostrar apenas os primeiros 50 slots livres para não travar
+                                            .map((slot)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                    onClick: ()=>{
+                                                        if (confirm(`Confirmar realocação para ${formatDate(slot.date)} às ${slot.startTime}?`)) {
+                                                            reallocateBooking(reallocationBooking.id, slot.id).then((success)=>{
+                                                                if (success) setReallocationBooking(null);
+                                                            });
+                                                        }
+                                                    },
+                                                    className: "p-3 border border-green-200 bg-green-50 hover:bg-green-100 rounded-lg text-left transition-colors",
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                            className: "font-medium text-green-800",
+                                                            children: formatDate(slot.date)
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                            lineNumber: 1326,
+                                                            columnNumber: 27
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                            className: "text-sm text-green-700",
+                                                            children: [
+                                                                slot.startTime,
+                                                                " - ",
+                                                                slot.endTime
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                            lineNumber: 1327,
+                                                            columnNumber: 27
+                                                        }, this)
+                                                    ]
+                                                }, slot.id, true, {
+                                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                    lineNumber: 1315,
+                                                    columnNumber: 25
+                                                }, this))
+                                        }, void 0, false, {
+                                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                            lineNumber: 1309,
+                                            columnNumber: 19
+                                        }, this),
+                                        slots.filter((s)=>!s.isBooked && !s.isDisabled && s.date >= new Date().toISOString().split('T')[0]).length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                            className: "text-center text-gray-500 py-8",
+                                            children: "Não há horários disponíveis futuros."
+                                        }, void 0, false, {
+                                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                            lineNumber: 1332,
+                                            columnNumber: 21
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                    lineNumber: 1294,
+                                    columnNumber: 17
+                                }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "space-y-4",
+                                    children: bookings.filter((b)=>b.status === 'pending_reallocation').length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200",
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                            className: "text-gray-500",
+                                            children: "Nenhum agendamento pendente de realocação."
+                                        }, void 0, false, {
+                                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                            lineNumber: 1339,
+                                            columnNumber: 23
+                                        }, this)
+                                    }, void 0, false, {
+                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                        lineNumber: 1338,
+                                        columnNumber: 21
+                                    }, this) : bookings.filter((b)=>b.status === 'pending_reallocation').map((booking)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "bg-white border border-gray-200 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-sm",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                            className: "flex items-center gap-2 mb-1",
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                    className: "px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-mono rounded",
+                                                                    children: booking.id
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                    lineNumber: 1348,
+                                                                    columnNumber: 31
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
+                                                                    className: "font-semibold text-gray-800",
+                                                                    children: booking.name
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                    lineNumber: 1351,
+                                                                    columnNumber: 31
+                                                                }, this)
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                            lineNumber: 1347,
+                                                            columnNumber: 29
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                            className: "text-sm text-gray-600 space-y-0.5",
+                                                            children: [
+                                                                booking.phone && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                    children: [
+                                                                        "📱 ",
+                                                                        booking.phone
+                                                                    ]
+                                                                }, void 0, true, {
+                                                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                    lineNumber: 1354,
+                                                                    columnNumber: 49
+                                                                }, this),
+                                                                booking.email && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                    children: [
+                                                                        "✉️ ",
+                                                                        booking.email
+                                                                    ]
+                                                                }, void 0, true, {
+                                                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                    lineNumber: 1355,
+                                                                    columnNumber: 49
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                    className: "text-xs text-gray-400 mt-1",
+                                                                    children: [
+                                                                        "Originalmente agendado em: ",
+                                                                        new Date(booking.createdAt).toLocaleDateString('pt-BR')
+                                                                    ]
+                                                                }, void 0, true, {
+                                                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                    lineNumber: 1356,
+                                                                    columnNumber: 31
+                                                                }, this)
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                            lineNumber: 1353,
+                                                            columnNumber: 29
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                    lineNumber: 1346,
+                                                    columnNumber: 27
+                                                }, this),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                    className: "flex gap-2 w-full sm:w-auto",
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                            onClick: ()=>setReallocationBooking(booking),
+                                                            className: "flex-1 sm:flex-none px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium",
+                                                            children: "Realocar"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                            lineNumber: 1360,
+                                                            columnNumber: 29
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                            onClick: ()=>{
+                                                                if (confirm('Tem certeza que deseja cancelar definitivamente este agendamento?')) {
+                                                                    cancelBooking(booking.id);
+                                                                }
+                                                            },
+                                                            className: "flex-1 sm:flex-none px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium",
+                                                            children: "Cancelar"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                            lineNumber: 1366,
+                                                            columnNumber: 29
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                    lineNumber: 1359,
+                                                    columnNumber: 27
+                                                }, this)
+                                            ]
+                                        }, booking.id, true, {
+                                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                            lineNumber: 1345,
+                                            columnNumber: 25
+                                        }, this))
+                                }, void 0, false, {
+                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                    lineNumber: 1336,
+                                    columnNumber: 17
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                            lineNumber: 1277,
+                            columnNumber: 13
+                        }, this) : activeTab === 'internal' ? /* Agendamento Interno */ /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "max-w-2xl mx-auto",
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "bg-white border border-gray-200 rounded-xl p-6 shadow-sm",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                                        className: "text-lg font-bold text-gray-800 mb-4",
+                                        children: "Novo Agendamento Interno"
+                                    }, void 0, false, {
+                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                        lineNumber: 1387,
+                                        columnNumber: 17
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-sm text-gray-600 mb-6",
+                                        children: "Use este formulário para criar agendamentos em qualquer data e horário, ignorando regras de disponibilidade pública. Estes agendamentos não aparecerão como disponíveis na agenda pública."
+                                    }, void 0, false, {
+                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                        lineNumber: 1388,
+                                        columnNumber: 17
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
+                                        onSubmit: handleInternalBooking,
+                                        className: "space-y-4",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "grid grid-cols-1 sm:grid-cols-2 gap-4",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                                className: "block text-sm font-medium text-gray-700 mb-1",
+                                                                children: "Data"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                lineNumber: 1396,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                                type: "date",
+                                                                required: true,
+                                                                value: internalDate,
+                                                                onChange: (e)=>setInternalDate(e.target.value),
+                                                                className: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                lineNumber: 1397,
+                                                                columnNumber: 23
+                                                            }, this)
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                        lineNumber: 1395,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: "grid grid-cols-2 gap-2",
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                children: [
+                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                                        className: "block text-sm font-medium text-gray-700 mb-1",
+                                                                        children: "Início"
+                                                                    }, void 0, false, {
+                                                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                        lineNumber: 1407,
+                                                                        columnNumber: 25
+                                                                    }, this),
+                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                                        type: "time",
+                                                                        required: true,
+                                                                        value: internalStartTime,
+                                                                        onChange: (e)=>setInternalStartTime(e.target.value),
+                                                                        className: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                                                    }, void 0, false, {
+                                                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                        lineNumber: 1408,
+                                                                        columnNumber: 25
+                                                                    }, this)
+                                                                ]
+                                                            }, void 0, true, {
+                                                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                lineNumber: 1406,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                children: [
+                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                                        className: "block text-sm font-medium text-gray-700 mb-1",
+                                                                        children: "Fim"
+                                                                    }, void 0, false, {
+                                                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                        lineNumber: 1417,
+                                                                        columnNumber: 25
+                                                                    }, this),
+                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                                        type: "time",
+                                                                        required: true,
+                                                                        value: internalEndTime,
+                                                                        onChange: (e)=>setInternalEndTime(e.target.value),
+                                                                        className: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                                                    }, void 0, false, {
+                                                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                        lineNumber: 1418,
+                                                                        columnNumber: 25
+                                                                    }, this)
+                                                                ]
+                                                            }, void 0, true, {
+                                                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                lineNumber: 1416,
+                                                                columnNumber: 23
+                                                            }, this)
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                        lineNumber: 1405,
+                                                        columnNumber: 21
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                lineNumber: 1394,
+                                                columnNumber: 19
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "grid grid-cols-1 sm:grid-cols-2 gap-4",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                                className: "block text-sm font-medium text-gray-700 mb-1",
+                                                                children: "Nome Completo"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                lineNumber: 1431,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                                type: "text",
+                                                                required: true,
+                                                                value: internalName,
+                                                                onChange: (e)=>setInternalName(e.target.value),
+                                                                className: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                lineNumber: 1432,
+                                                                columnNumber: 23
+                                                            }, this)
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                        lineNumber: 1430,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                                className: "block text-sm font-medium text-gray-700 mb-1",
+                                                                children: "CPF"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                lineNumber: 1441,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                                type: "text",
+                                                                value: internalCpf,
+                                                                onChange: (e)=>setInternalCpf(e.target.value),
+                                                                className: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                lineNumber: 1442,
+                                                                columnNumber: 23
+                                                            }, this)
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                        lineNumber: 1440,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                                className: "block text-sm font-medium text-gray-700 mb-1",
+                                                                children: "Email"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                lineNumber: 1450,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                                type: "email",
+                                                                value: internalEmail,
+                                                                onChange: (e)=>setInternalEmail(e.target.value),
+                                                                className: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                lineNumber: 1451,
+                                                                columnNumber: 23
+                                                            }, this)
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                        lineNumber: 1449,
+                                                        columnNumber: 21
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                                className: "block text-sm font-medium text-gray-700 mb-1",
+                                                                children: "Telefone"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                lineNumber: 1459,
+                                                                columnNumber: 23
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                                type: "text",
+                                                                value: internalPhone,
+                                                                onChange: (e)=>setInternalPhone(e.target.value),
+                                                                className: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                                lineNumber: 1460,
+                                                                columnNumber: 23
+                                                            }, this)
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                        lineNumber: 1458,
+                                                        columnNumber: 21
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                lineNumber: 1429,
+                                                columnNumber: 19
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                        className: "block text-sm font-medium text-gray-700 mb-1",
+                                                        children: "Descrição"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                        lineNumber: 1470,
+                                                        columnNumber: 19
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
+                                                        value: internalDescription,
+                                                        onChange: (e)=>setInternalDescription(e.target.value),
+                                                        className: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none",
+                                                        placeholder: "Descrição do agendamento",
+                                                        rows: 3
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                        lineNumber: 1473,
+                                                        columnNumber: 19
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                lineNumber: 1469,
+                                                columnNumber: 17
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "flex gap-4",
+                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$OneDrive$2f$Desktop$2f$Programming$2f$agendamento$2d$policial$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                    type: "submit",
+                                                    className: "px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium",
+                                                    children: "Criar Agendamento Interno"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                    lineNumber: 1483,
+                                                    columnNumber: 19
+                                                }, this)
+                                            }, void 0, false, {
+                                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                                lineNumber: 1482,
+                                                columnNumber: 17
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                        lineNumber: 1393,
+                                        columnNumber: 17
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                                lineNumber: 1386,
+                                columnNumber: 15
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
+                            lineNumber: 1385,
                             columnNumber: 13
                         }, this) : null
                     }, void 0, false, {
                         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                        lineNumber: 309,
+                        lineNumber: 397,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-                lineNumber: 254,
+                lineNumber: 322,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/admin/page.tsx",
-        lineNumber: 197,
+        lineNumber: 265,
         columnNumber: 5
     }, this);
 }

@@ -406,6 +406,80 @@ function AppProvider({ children }) {
             return false;
         }
     };
+    const moveToPool = async (bookingId)=>{
+        try {
+            const response = await fetch(`/api/bookings/${bookingId}/move-to-pool`, {
+                method: 'POST'
+            });
+            if (response.ok) {
+                setState((prev)=>{
+                    const booking = prev.bookings.find((b)=>b.id === bookingId);
+                    if (!booking) return prev;
+                    const updatedBooking = {
+                        ...booking,
+                        status: 'pending_reallocation'
+                    };
+                    return {
+                        ...prev,
+                        bookings: prev.bookings.map((b)=>b.id === bookingId ? updatedBooking : b),
+                        slots: prev.slots.map((slot)=>slot.id === booking.slotId ? {
+                                ...slot,
+                                isBooked: false,
+                                booking: undefined
+                            } : slot)
+                    };
+                });
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('Erro ao mover para pool:', error);
+            return false;
+        }
+    };
+    const cancelDay = async (date)=>{
+        try {
+            const response = await fetch('/api/bookings/cancel-day', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    date
+                })
+            });
+            if (response.ok) {
+                await refreshData(); // Recarregar tudo para garantir consistência
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('Erro ao cancelar dia:', error);
+            return false;
+        }
+    };
+    const reallocateBooking = async (bookingId, newSlotId)=>{
+        try {
+            const response = await fetch('/api/bookings/reallocate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    bookingId,
+                    newSlotId
+                })
+            });
+            if (response.ok) {
+                await refreshData(); // Recarregar tudo
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('Erro ao realocar agendamento:', error);
+            return false;
+        }
+    };
     const addAvailabilityConfig = async (config)=>{
         try {
             const response = await fetch('/api/configs', {
@@ -561,6 +635,9 @@ function AppProvider({ children }) {
             reactivateSlot,
             addBooking,
             cancelBooking,
+            moveToPool,
+            cancelDay,
+            reallocateBooking,
             addAvailabilityConfig,
             removeAvailabilityConfig,
             generateSlotsFromConfig,
@@ -571,7 +648,7 @@ function AppProvider({ children }) {
         children: children
     }, void 0, false, {
         fileName: "[project]/OneDrive/Desktop/Programming/agendamento-policial/app/context/AppContext.tsx",
-        lineNumber: 338,
+        lineNumber: 411,
         columnNumber: 5
     }, this);
 }

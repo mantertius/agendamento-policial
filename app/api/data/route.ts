@@ -8,24 +8,35 @@ export async function GET() {
     const bookings = db.prepare('SELECT * FROM bookings').all();
     const configs = db.prepare('SELECT * FROM availability_configs').all();
 
+    // Otimização: Criar um Map de bookings para acesso O(1)
+    const bookingsMap = new Map();
+    bookings.forEach((b: any) => {
+      bookingsMap.set(b.slot_id, b);
+    });
+
     // Converter formato do banco para formato da aplicação
-    const formattedSlots = slots.map((slot: any) => ({
-      id: slot.id,
-      date: slot.date,
-      startTime: slot.start_time,
-      endTime: slot.end_time,
-      isBooked: slot.is_booked === 1,
-      isDisabled: slot.is_disabled === 1,
-      booking: bookings.find((b: any) => b.slot_id === slot.id) ? {
-        id: (bookings.find((b: any) => b.slot_id === slot.id) as any).id,
-        slotId: (bookings.find((b: any) => b.slot_id === slot.id) as any).slot_id,
-        name: (bookings.find((b: any) => b.slot_id === slot.id) as any).name,
-        phone: (bookings.find((b: any) => b.slot_id === slot.id) as any).phone || undefined,
-        email: (bookings.find((b: any) => b.slot_id === slot.id) as any).email || undefined,
-        description: (bookings.find((b: any) => b.slot_id === slot.id) as any).description || undefined,
-        createdAt: (bookings.find((b: any) => b.slot_id === slot.id) as any).created_at,
-      } : undefined,
-    }));
+    const formattedSlots = slots.map((slot: any) => {
+      const booking = bookingsMap.get(slot.id);
+      return {
+        id: slot.id,
+        date: slot.date,
+        startTime: slot.start_time,
+        endTime: slot.end_time,
+        isBooked: slot.is_booked === 1,
+        isDisabled: slot.is_disabled === 1,
+        isInternal: slot.is_internal === 1,
+        booking: booking ? {
+          id: booking.id,
+          slotId: booking.slot_id,
+          name: booking.name,
+          phone: booking.phone || undefined,
+          email: booking.email || undefined,
+          description: booking.description || undefined,
+          createdAt: booking.created_at,
+          status: booking.status,
+        } : undefined,
+      };
+    });
 
     const formattedBookings = bookings.map((b: any) => ({
       id: b.id,

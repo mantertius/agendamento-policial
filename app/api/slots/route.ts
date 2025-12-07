@@ -17,6 +17,7 @@ interface BookingRow {
   email: string | null;
   description: string | null;
   created_at: string;
+  status?: string;
 }
 
 export async function GET() {
@@ -41,6 +42,7 @@ export async function GET() {
           email: booking.email || undefined,
           description: booking.description || undefined,
           createdAt: booking.created_at,
+          status: (booking.status as any) || 'confirmed',
         } : undefined,
       };
     });

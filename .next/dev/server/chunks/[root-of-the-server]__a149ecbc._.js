@@ -108,8 +108,26 @@ function getDb() {
       email TEXT,
       description TEXT,
       created_at TEXT NOT NULL,
+      status TEXT DEFAULT 'confirmed',
       FOREIGN KEY (slot_id) REFERENCES slots(id)
     );
+    
+    -- Migração: Adicionar coluna status se não existir (para bancos existentes)
+    PRAGMA user_version;
+  `);
+    try {
+        const tableInfo = db.prepare("PRAGMA table_info(bookings)").all();
+        const hasStatusColumn = tableInfo.some((col)=>col.name === 'status');
+        if (!hasStatusColumn) {
+            db.prepare("ALTER TABLE bookings ADD COLUMN status TEXT DEFAULT 'confirmed'").run();
+        }
+    } catch (error) {
+        console.error('Erro ao verificar/migrar tabela bookings:', error);
+    }
+    db.exec(`
+    CREATE TABLE IF NOT EXISTS availability_configs (
+      id TEXT PRIMARY KEY,
+      start_date TEXT NOT NULL,
 
     CREATE TABLE IF NOT EXISTS availability_configs (
       id TEXT PRIMARY KEY,
@@ -165,6 +183,16 @@ function getDb() {
     } catch  {
     // Coluna já existe
     }
+    // Migração: Adicionar coluna is_internal se não existir
+    try {
+        const slotTableInfo = db.prepare("PRAGMA table_info(slots)").all();
+        const hasIsInternalColumn = slotTableInfo.some((col)=>col.name === 'is_internal');
+        if (!hasIsInternalColumn) {
+            db.prepare("ALTER TABLE slots ADD COLUMN is_internal INTEGER DEFAULT 0").run();
+        }
+    } catch (error) {
+        console.error('Erro ao verificar/migrar tabela slots (is_internal):', error);
+    }
     return db;
 }
 const __TURBOPACK__default__export__ = getDb;
@@ -186,24 +214,34 @@ async function GET() {
         const slots = db.prepare('SELECT * FROM slots ORDER BY date, start_time').all();
         const bookings = db.prepare('SELECT * FROM bookings').all();
         const configs = db.prepare('SELECT * FROM availability_configs').all();
+        // Otimização: Criar um Map de bookings para acesso O(1)
+        const bookingsMap = new Map();
+        bookings.forEach((b)=>{
+            bookingsMap.set(b.slot_id, b);
+        });
         // Converter formato do banco para formato da aplicação
-        const formattedSlots = slots.map((slot)=>({
+        const formattedSlots = slots.map((slot)=>{
+            const booking = bookingsMap.get(slot.id);
+            return {
                 id: slot.id,
                 date: slot.date,
                 startTime: slot.start_time,
                 endTime: slot.end_time,
                 isBooked: slot.is_booked === 1,
                 isDisabled: slot.is_disabled === 1,
-                booking: bookings.find((b)=>b.slot_id === slot.id) ? {
-                    id: bookings.find((b)=>b.slot_id === slot.id).id,
-                    slotId: bookings.find((b)=>b.slot_id === slot.id).slot_id,
-                    name: bookings.find((b)=>b.slot_id === slot.id).name,
-                    phone: bookings.find((b)=>b.slot_id === slot.id).phone || undefined,
-                    email: bookings.find((b)=>b.slot_id === slot.id).email || undefined,
-                    description: bookings.find((b)=>b.slot_id === slot.id).description || undefined,
-                    createdAt: bookings.find((b)=>b.slot_id === slot.id).created_at
+                isInternal: slot.is_internal === 1,
+                booking: booking ? {
+                    id: booking.id,
+                    slotId: booking.slot_id,
+                    name: booking.name,
+                    phone: booking.phone || undefined,
+                    email: booking.email || undefined,
+                    description: booking.description || undefined,
+                    createdAt: booking.created_at,
+                    status: booking.status
                 } : undefined
-            }));
+            };
+        });
         const formattedBookings = bookings.map((b)=>({
                 id: b.id,
                 slotId: b.slot_id,
